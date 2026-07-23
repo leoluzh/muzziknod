@@ -94,13 +94,15 @@ dois módulos permanecem carregados (agora desconectados entre si).
 
 - O que acontece quando dois módulos tentam se conectar formando um ciclo direto no grafo de
   áudio (realimentação) sem um módulo intermediário que introduza atraso/buffer?
-- Como o host se comporta se um módulo trava ou lança um erro durante seu ciclo de
-  processamento — o restante do grafo continua rodando ou o host pausa tudo?
+- Se um módulo trava ou lança um erro durante seu ciclo de processamento, o host o
+  desativa (estado `Faulted`) e o exclui dos ciclos seguintes — o restante do grafo
+  continua rodando normalmente, sem pausar o processamento inteiro (ver FR-011).
 - O que acontece se o usuário tentar carregar dois módulos com o mesmo identificador único?
 - Como o sistema lida com um módulo que expõe um número de portas de I/O diferente do declarado
   em seu contrato?
-- O que acontece se uma conexão for feita entre módulos com taxas de amostragem ou formatos de
-  buffer diferentes?
+- Uma conexão entre módulos com taxas de amostragem ou formatos de buffer diferentes é
+  simplesmente recusada pelo host — não há conversão automática de formato/taxa nesta
+  feature (ver FR-013).
 
 ## Requirements *(mandatory)*
 
@@ -128,21 +130,24 @@ dois módulos permanecem carregados (agora desconectados entre si).
 - **FR-010**: O host DEVE garantir que a remoção de um módulo só seja efetivada após a conclusão
   segura do ciclo de processamento em andamento.
 - **FR-011**: O host DEVE isolar falhas de um módulo individual (erro ou travamento durante o
-  processamento) [NEEDS CLARIFICATION: comportamento esperado — o host deve desativar apenas o
-  módulo com falha e continuar o restante do grafo, ou pausar o processamento inteiro por
-  segurança?].
+  processamento): apenas o módulo com falha é desativado (transita para o estado `Faulted`)
+  e passa a ser excluído dos ciclos de processamento seguintes — o restante do grafo
+  continua rodando normalmente a cada ciclo, sem que o host pause o processamento inteiro
+  por segurança. *(Resolvido — ver `research.md` §"FR-011 — Module fault isolation".)*
 - **FR-012**: O host DEVE impedir o carregamento de dois módulos com o mesmo identificador único
   simultaneamente.
 - **FR-013**: O host DEVE validar que módulos conectados operam com taxa de amostragem e formato
-  de buffer compatíveis [NEEDS CLARIFICATION: o host deve realizar conversão automática de
-  formato/taxa entre módulos incompatíveis, ou a incompatibilidade deve simplesmente impedir a
-  conexão?].
+  de buffer compatíveis. Não há conversão automática de formato/taxa entre módulos
+  incompatíveis — a incompatibilidade simplesmente impede a conexão, usando o mesmo
+  caminho de recusa de tipos incompatíveis (FR-005). *(Resolvido — ver `research.md`
+  §"FR-013 — Sample rate / buffer format compatibility".)*
 
 ### Key Entities
 
 - **Módulo**: Unidade funcional plugável (ex.: sintetizador, sequenciador, efeito). Possui um
   identificador único, um contrato declarado (portas de entrada/saída de áudio e/ou MIDI,
-  parâmetros configuráveis) e um ciclo de vida (carregado, ativo, removido).
+  parâmetros configuráveis) e um ciclo de vida (carregado, ativo, **com falha**, removido —
+  o estado "com falha" resulta do isolamento de falhas do FR-011).
 - **Porta**: Ponto de entrada ou saída de um módulo, tipado como áudio ou MIDI, usado como
   extremidade de uma conexão.
 - **Conexão**: Ligação entre a porta de saída de um módulo e a porta de entrada de outro,

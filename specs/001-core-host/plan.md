@@ -91,10 +91,15 @@ core-host/
 └── src/
     ├── commonMain/kotlin/dev/muzziknod/host/
     │   ├── contract/             # Module, Port, ModuleContract, PortType
+    │   │   └── testkit/          # ModuleContractComplianceTests — abstract test class,
+    │   │                         # NOT commonTest: Gradle/KMP has no cross-module
+    │   │                         # test-sourceSet dependency, so reference modules
+    │   │                         # subclass this from their own commonTest instead
     │   ├── graph/                # RoutingGraph, Connection, topological ordering
     │   └── lifecycle/            # ModuleRegistry (load/activate/remove)
     ├── commonTest/kotlin/dev/muzziknod/host/
-    │   └── contract/             # contract compliance test suite (reusable by ref modules)
+    │   ├── graph/                 # RoutingGraph integration tests (FakeModule doubles)
+    │   └── lifecycle/             # ModuleRegistry integration tests, FakeModule
     └── jvmMain/kotlin/dev/muzziknod/host/
         └── (empty for now — JVM-specific host wiring lands with real audio callback, future feature)
 

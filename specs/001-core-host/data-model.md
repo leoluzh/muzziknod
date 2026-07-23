@@ -7,7 +7,7 @@ Declared, versioned shape a module must satisfy to be accepted by the host
 
 | Field | Type | Notes |
 |---|---|---|
-| `id` | `String` | Unique module type identifier (not the instance id) |
+| `typeId` | `String` | Unique module type identifier (not the instance id) |
 | `version` | `Int` | Contract version for this module type |
 | `ports` | `List<PortSpec>` | Declared input/output ports, audio and/or MIDI |
 | `parameters` | `List<ParameterSpec>` | Configurable parameters exposed to host/UI (definition only — no UI in this feature) |
