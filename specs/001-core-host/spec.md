@@ -4,7 +4,7 @@
 
 **Created**: 2026-07-22
 
-**Status**: Implemented (see [tasks.md](./tasks.md) — all 47 tasks complete, PR #1 open against main)
+**Status**: Implemented (see [tasks.md](./tasks.md) — all 47 tasks complete, PR #1 merged into main)
 
 **Input**: User description: "Core do host modular: gerenciamento de ciclo de vida de módulos, grafo de roteamento de áudio/MIDI e contrato base de módulo"
 
