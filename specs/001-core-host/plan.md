@@ -22,7 +22,8 @@ introduced yet — nothing in this feature requires them (YAGNI, Constitution VI
 
 **Storage**: N/A — no project persistence in this feature (spec Assumptions)
 
-**Testing**: `kotlin.test` on `jvmTest`, run via Gradle (`./gradlew test`). Contract tests
+**Testing**: `kotlin.test` on `jvmTest`, run via Gradle (`./gradlew check`, or `jvmTest`
+per module — there is no root-level `test` task in this KMP project). Contract tests
 mandatory for the module contract itself and for every reference module, per Constitution
 "Fluxo de Desenvolvimento".
 

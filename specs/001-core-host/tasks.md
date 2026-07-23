@@ -145,8 +145,9 @@ received events, and verify events arrive in emitted order/timing.
       real reference module classes: `core-host` cannot depend on `reference-modules:*`
       (dependency direction is the reverse), so its own tests use local doubles; the
       *real* modules are proven via T039/T040's contract-compliance subclasses instead
-- [X] T025 [P] [US2] Integration test: connecting an Audio output to a Midi input is
-      rejected with a reason (FR-005; US2 AC2) in
+- [X] T025 [P] [US2] Integration test: connecting an Audio output to a Midi input (and
+      the mirrored Midi output to Audio input) is rejected with a reason (FR-005, SC-002;
+      US2 AC2) in
       `core-host/src/commonTest/kotlin/dev/muzziknod/host/graph/RoutingGraphTypeMismatchTest.kt`
       (same `FakeModule`-doubles caveat as T024)
 - [X] T026 [P] [US2] Integration test: disconnecting one link stops flow between those

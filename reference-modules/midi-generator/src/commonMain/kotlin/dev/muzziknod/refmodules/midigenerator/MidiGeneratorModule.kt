@@ -9,6 +9,8 @@ import dev.muzziknod.host.contract.PortType
 import dev.muzziknod.host.contract.ProcessContext
 
 private const val OUTPUT_PORT_ID = "out"
+private const val NOTES_PER_OCTAVE = 12
+private const val BASE_NOTE = 60
 
 /**
  * Reference module: emits a fixed MIDI event sequence every cycle. Source-only (no
@@ -25,22 +27,24 @@ class MidiGeneratorModule(override val instanceId: String) : Module {
 
     private var cycleCount = 0
 
-    // Fixed-size, reused every cycle instead of reallocated — Constitution III forbids
-    // allocation on the processing hot path.
-    private val emittedEvents = mutableListOf(
-        MidiEvent(status = 0x90, data1 = 60, data2 = 100, frameOffset = 0),
-        MidiEvent(status = 0x80, data1 = 60, data2 = 0, frameOffset = 64),
-    )
+    // All NOTES_PER_OCTAVE possible event lists are precomputed once in onLoad() and
+    // indexed into every process() call — zero allocation on the hot path (Constitution
+    // III, non-negotiable). Each MidiEvent is immutable, so these lists never mutate.
+    private lateinit var noteEventsByIndex: List<List<MidiEvent>>
 
     override fun onLoad() {
         cycleCount = 0
+        noteEventsByIndex = (0 until NOTES_PER_OCTAVE).map { offset ->
+            val noteNumber = BASE_NOTE + offset
+            listOf(
+                MidiEvent(status = 0x90, data1 = noteNumber, data2 = 100, frameOffset = 0),
+                MidiEvent(status = 0x80, data1 = noteNumber, data2 = 0, frameOffset = 64),
+            )
+        }
     }
 
     override fun process(context: ProcessContext) {
-        val noteNumber = 60 + (cycleCount % 12)
-        emittedEvents[0] = emittedEvents[0].copy(data1 = noteNumber)
-        emittedEvents[1] = emittedEvents[1].copy(data1 = noteNumber)
-        context.writeMidi(OUTPUT_PORT_ID, emittedEvents)
+        context.writeMidi(OUTPUT_PORT_ID, noteEventsByIndex[cycleCount % NOTES_PER_OCTAVE])
         cycleCount++
     }
 

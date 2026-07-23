@@ -29,4 +29,25 @@ class RoutingGraphTypeMismatchTest {
 
         assertIs<ConnectResult.Rejected>(result)
     }
+
+    @Test
+    fun connectingMidiOutputToAudioInputIsRejected() {
+        val registry = ModuleRegistry()
+        val graph = RoutingGraph(registry)
+
+        val midiSource = FakeModule.withPorts(
+            "midi-gen",
+            listOf(PortSpec(id = "out", direction = PortDirection.Output, type = PortType.Midi)),
+        )
+        val audioSink = FakeModule.withPorts(
+            "synth",
+            listOf(PortSpec(id = "in", direction = PortDirection.Input, type = PortType.Audio, sampleRate = 48_000)),
+        )
+        registry.load(midiSource)
+        registry.load(audioSink)
+
+        val result = graph.connect("midi-gen", "out", "synth", "in")
+
+        assertIs<ConnectResult.Rejected>(result)
+    }
 }

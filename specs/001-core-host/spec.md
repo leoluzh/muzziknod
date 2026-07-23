@@ -4,7 +4,7 @@
 
 **Created**: 2026-07-22
 
-**Status**: Draft
+**Status**: Implemented (see [tasks.md](./tasks.md) — all 47 tasks complete, PR #1 open against main)
 
 **Input**: User description: "Core do host modular: gerenciamento de ciclo de vida de módulos, grafo de roteamento de áudio/MIDI e contrato base de módulo"
 
@@ -178,7 +178,11 @@ dois módulos permanecem carregados (agora desconectados entre si).
 - Os módulos de referência usados para validar esta feature são módulos simples, sem
   processamento DSP nativo real (ex.: geradores de eventos MIDI e osciladores básicos em
   Kotlin puro) — a integração com engine DSP nativa via FFM API é tratada como uma feature
-  separada e futura.
+  separada e futura. Por serem scaffolding de prova-de-conceito desta feature (não módulos
+  de produto como um synth ou sequenciador real), eles são especificados aqui — nesta spec,
+  no plan.md e no tasks.md — e não recebem spec própria via `/speckit-specify`; a regra da
+  Constitution ("Fluxo de Desenvolvimento" — cada módulo novo nasce com sua própria spec)
+  aplica-se a módulos de produto futuros, não a este scaffolding de referência.
 - Um único usuário opera o host por vez (sem colaboração multiusuário simultânea nesta fase).
 - O host não possui, nesta feature, persistência de projeto em disco (salvar/carregar sessão) —
   isso é uma feature futura que dependerá deste core estar estável.
