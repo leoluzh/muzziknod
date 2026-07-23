@@ -36,14 +36,22 @@ Comandos opcionais de reforço de qualidade: `/speckit-analyze`, `/speckit-check
 
 | # | Feature | Status |
 |---|---------|--------|
-| [001](specs/001-core-host/spec.md) | Core Host Modular — ciclo de vida de módulos, grafo de roteamento de áudio/MIDI, contrato base de módulo | Draft (spec pronta, com 2 pontos `[NEEDS CLARIFICATION]` a resolver antes do plano) |
+| [001](specs/001-core-host/spec.md) | Core Host Modular — ciclo de vida de módulos, grafo de roteamento de áudio/MIDI, contrato base de módulo | Implementado — ver [tasks.md](specs/001-core-host/tasks.md) e [quickstart.md](specs/001-core-host/quickstart.md) |
+
+## Build & testes
+
+```bash
+./gradlew build   # compila core-host + reference-modules (oscillator, midi-generator, midi-logger)
+./gradlew check   # roda todos os testes de todos os módulos (não existe task `test` no root — é `check`, ou `jvmTest` por módulo)
+```
+
+Veja [`specs/001-core-host/quickstart.md`](specs/001-core-host/quickstart.md) para os
+comandos de validação cenário-a-cenário (US1/US2/US3, SC-001–SC-004).
 
 ## Próximos passos sugeridos
 
-1. Abrir esta pasta no Claude Code e rodar `/speckit-clarify` sobre a spec `001-core-host` para
-   resolver os dois pontos em aberto (isolamento de falha de módulo; conversão automática de
-   formato/taxa de amostragem)
-2. Rodar `/speckit-plan` para gerar o plano técnico (estrutura de módulos Gradle/KMP, definição
-   do contrato de módulo em Kotlin, estratégia de testes)
-3. Rodar `/speckit-tasks` e depois `/speckit-implement` para começar a implementação dos 2-3
-   módulos de referência que servirão de prova de conceito da arquitetura modular
+1. Rodar `/speckit-analyze` sobre `001-core-host` para uma checagem de consistência
+   cross-artifact agora que spec/plan/tasks/implementação existem
+2. Rodar `/speckit-specify` para a próxima feature (ex.: persistência de projeto, UI
+   Compose, ou integração DSP nativa via FFM) — cada feature nova nasce em seu próprio
+   worktree/branch, nunca direto em `main`
