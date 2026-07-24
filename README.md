@@ -59,16 +59,18 @@ Comandos opcionais de reforço de qualidade: `/speckit-analyze`, `/speckit-check
 | # | Feature | Status |
 |---|---------|--------|
 | [001](specs/001-core-host/spec.md) | Core Host Modular — ciclo de vida de módulos, grafo de roteamento de áudio/MIDI, contrato base de módulo | Implementado — ver [tasks.md](specs/001-core-host/tasks.md) e [quickstart.md](specs/001-core-host/quickstart.md) |
+| [002](specs/002-midi-sequencer/spec.md) | Módulo Sequenciador MIDI — padrão de passos, transporte play/stop, edição ao vivo | Implementado — ver [tasks.md](specs/002-midi-sequencer/tasks.md) e [quickstart.md](specs/002-midi-sequencer/quickstart.md) |
 
 ## Build & testes
 
 ```bash
-./gradlew build   # compila core-host + reference-modules (oscillator, midi-generator, midi-logger)
+./gradlew build   # compila core-host + reference-modules (oscillator, midi-generator, midi-logger) + modules (midi-sequencer)
 ./gradlew check   # roda todos os testes de todos os módulos (não existe task `test` no root — é `check`, ou `jvmTest` por módulo)
 ```
 
-Veja [`specs/001-core-host/quickstart.md`](specs/001-core-host/quickstart.md) para os
-comandos de validação cenário-a-cenário (US1/US2/US3, SC-001–SC-004).
+Veja [`specs/001-core-host/quickstart.md`](specs/001-core-host/quickstart.md) e
+[`specs/002-midi-sequencer/quickstart.md`](specs/002-midi-sequencer/quickstart.md) para
+os comandos de validação cenário-a-cenário.
 
 ## Próximos passos sugeridos
 
