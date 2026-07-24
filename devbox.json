@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/main/.schema/devbox.schema.json",
+  "packages": [
+    "openjdk@26",
+    "gradle_9@latest"
+  ],
+  "shell": {
+    "init_hook": [
+      "echo 'muzziknod devbox shell — Java 26 (see constitution: java.lang.foreign FFM API), Gradle via ./gradlew'"
+    ],
+    "scripts": {
+      "build": "./gradlew build",
+      "test": "./gradlew test"
+    }
+  }
+}
