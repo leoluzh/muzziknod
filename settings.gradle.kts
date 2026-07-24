@@ -20,4 +20,5 @@ include(
     ":reference-modules:oscillator",
     ":reference-modules:midi-generator",
     ":reference-modules:midi-logger",
+    ":modules:midi-sequencer",
 )
