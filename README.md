@@ -16,6 +16,28 @@ Software modular de criação de música eletrônica: um host enxuto orquestra m
 Todas as decisões de arquitetura acima estão registradas e justificadas em
 [`.specify/memory/constitution.md`](.specify/memory/constitution.md).
 
+## Ambiente de desenvolvimento (Devbox)
+
+Este projeto tem um [`devbox.json`](devbox.json) pinando Java 26 via Nix, para um shell
+reprodutível sem instalar JDK manualmente:
+
+```bash
+devbox shell        # entra no shell com Java 26 disponível
+devbox run build    # ./gradlew build
+devbox run test     # ./gradlew test
+```
+
+**Notas**:
+- Devbox depende do Nix, que não roda nativamente no Windows — use WSL2.
+- O pacote `openjdk@26` no `devbox.json` **não resolve ainda**: confirmado via
+  `devbox search openjdk` que o Nixhub só indexa até `openjdk25`
+  (`javaPackages.compiler.openjdk25`, ex.: `25.0.4+1`). O pin em `26` é intencional/
+  aspiracional — atualize para a versão real quando o Nixhub indexar o JDK 26.
+- O wrapper do Gradle (`./gradlew`) baixa sua própria distribuição do Gradle e continua
+  sendo a fonte de verdade da versão (`gradle-wrapper.properties` pina `9.6.1`). O pacote
+  `gradle_9` no `devbox.json` é só um fallback de CLI para uso offline/sem rede — o
+  Nixhub ainda não indexa exatamente `9.6.1` (`gradle_9@latest` resolve para `9.5.1`).
+
 ## Desenvolvimento guiado por specs (Spec Kit + Claude Code)
 
 Este projeto usa o [GitHub Spec Kit](https://github.com/github/spec-kit) para desenvolvimento
