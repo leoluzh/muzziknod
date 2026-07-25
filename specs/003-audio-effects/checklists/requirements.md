@@ -33,11 +33,13 @@
 
 - FR-015/FR-016 reference the Constitution (Princípio III, I) and prior decisions from the
   001-core-host precedent — kept as spec-level scoping, not implementation detail: they
-  bound *what* is delivered (contract + passthrough, four separate module types), not *how*
-  it's coded.
-- Real DSP algorithms (actual reverb/delay/distortion/EQ signal processing) are explicitly
-  out of scope for this feature per Constitution Principle III; deferred to a future native
-  engine bridge feature.
+  bound *what* is delivered (contract + real Kotlin DSP, four separate module types), not
+  *how* it's coded.
+- FR-015 revised during `/speckit-plan`: real (simple) DSP for all four effects ships in
+  this feature, in pure Kotlin, per the `OscillatorModule` precedent — not a passthrough
+  placeholder. Native FFM/engine bridge stays deferred until a real-time audio driver
+  actually exists (Constitution III applies to the real-time path, which nothing reaches
+  yet).
 - Module-type-vs-single-module architecture question resolved directly with user during
   `/speckit-specify` (four separate module types, chained via host routing graph) — same
   resolution as the prior reverb/delay-only draft, now extended to distortion and EQ.

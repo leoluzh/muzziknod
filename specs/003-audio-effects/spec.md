@@ -162,15 +162,16 @@ destino recebe o sinal processado por todos os efeitos habilitados, na ordem da 
   válido DEVEM ser limitados (clamped) ao intervalo válido, sem lançar erro.
 - **FR-014**: Um módulo de efeito sem sinal de entrada conectado DEVE processar silêncio e
   produzir saída silenciosa, sem erro.
-- **FR-015**: Esta feature entrega o contrato dos módulos de efeito e o controle de
-  wet/dry/parâmetros com processamento de áudio como passthrough (identidade — o sinal
-  "processado" é, por ora, o próprio sinal de entrada, sem DSP real de reverb/delay/
-  distortion/EQ). O algoritmo de DSP real fica para uma feature futura dedicada à ponte
-  nativa FFM/engine DSP, cumprindo a Constitution (Princípio III — DSP crítico nunca
-  implementado diretamente em Kotlin puro no caminho de áudio) ao não implementar nenhum
-  DSP real ainda, em vez de violar o princípio com uma implementação provisória em Kotlin
-  puro. *(Resolvido — decisão do usuário na especificação; ver research.md quando a feature
-  for planejada.)*
+- **FR-015**: Esta feature entrega DSP real (ainda que simples) para os quatro efeitos —
+  não um passthrough inerte — implementado em Kotlin puro, seguindo o precedente já
+  estabelecido pelo `OscillatorModule` (001-core-host), que sintetiza uma onda senoidal real
+  em Kotlin puro. A Constitution (Princípio III) reserva a fronteira nativa FFM/JNI para o
+  "caminho de áudio" em sentido real-time (processamento acionado por um callback de áudio
+  de baixa latência); como nenhuma feature até agora conecta `process()` a um driver de
+  áudio real-time — os ciclos são acionados por testes/host síncrono — o princípio ainda não
+  se aplica, e a ponte nativa fica para quando essa lacuna for preenchida (YAGNI,
+  Constitution VII). *(Resolvido — decisão do usuário na especificação, revista durante o
+  planejamento à luz do precedente do OscillatorModule.)*
 - **FR-016**: Os quatro tipos de efeito (reverb, delay, distortion, EQ) entram nesta
   feature como quatro tipos de módulo separados, não um único módulo configurável, e não um
   módulo único com cadeia interna — consistente com como oscillator/midi-generator/
