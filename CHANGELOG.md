@@ -3,15 +3,15 @@
 All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project intends to adhere to [Semantic Versioning](https://semver.org/)
-once the first release is tagged. Until then, everything lives under
-[Unreleased].
+and this project adheres to [Semantic Versioning](https://semver.org/).
 
-Machine-generated release notes for each tagged release are drafted
-automatically by [release-drafter](.github/release-drafter.yml) from merged
-PR labels; this file is the human-curated summary.
+Starting with the first tagged release, new entries above this point are
+generated automatically by [release-please](.github/workflows/release-please.yml)
+from [Conventional Commits](https://www.conventionalcommits.org/) on `main` —
+merging its release PR is what cuts the version bump and the entry. Everything
+below is the hand-curated history from before release-please was set up.
 
-## [Unreleased]
+## Pre-release-please history
 
 ### Added
 
@@ -28,12 +28,11 @@ PR labels; this file is the human-curated summary.
 - CI: GitHub Actions workflow building and testing on every push to `main`
   and every pull request (JDK 26 / Temurin, Gradle caching).
 - Repo governance: `CODEOWNERS`, Dependabot (weekly Gradle + GitHub Actions
-  updates), a shared label set synced via `label-sync.yml`, and
-  release-drafter for auto-drafted release notes.
+  updates), a shared label set synced via `label-sync.yml`, and (later
+  replaced by release-please) release-drafter for auto-drafted release
+  notes.
 - Experimental `devbox.json` for a reproducible Nix-based dev shell.
 
 ### Changed
 
 - Bumped Kotlin from `2.3.21` to `2.4.10` (Dependabot).
-
-[Unreleased]: https://github.com/leoluzh/muzziknod/commits/main
