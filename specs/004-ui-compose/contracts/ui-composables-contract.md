@@ -31,10 +31,13 @@ class HostViewModel(
 @Composable
 fun GraphView(
     state: HostUiState,
-    onConnect: (sourceInstanceId: String, sourcePortId: String, targetInstanceId: String, targetPortId: String) -> Unit,
+    onConnect: (sourceInstanceId: String, sourcePortId: String, targetInstanceId: String, targetPortId: String) -> ConnectResult,
     onDisconnect: (connectionId: String) -> Unit,
 )
 ```
+`onConnect` returns `ConnectResult` (not `Unit`) so `GraphView` can synchronously display a
+`Rejected` reason without needing a second observable round-trip — `HostViewModel.connect`
+already returns `ConnectResult` for exactly this reason.
 - Satisfaz US1 (Acceptance Scenarios 1–3): renderiza módulos/portas/conexões a partir de
   `state`, invoca `onConnect`/`onDisconnect` em resposta à interação do usuário — nunca
   chama o host diretamente.

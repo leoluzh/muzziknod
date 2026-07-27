@@ -120,37 +120,46 @@ ambos.
 
 ### Tests for User Story 1
 
-- [ ] T014 [P] [US1] Composable test: `GraphView` renderiza os módulos/portas/conexões
+- [X] T014 [P] [US1] Composable test: `GraphView` renderiza os módulos/portas/conexões
       de um `HostUiState` de entrada (US1 AC1 setup) in
-      `ui-desktop/src/commonTest/kotlin/dev/muzziknod/ui/graph/GraphViewRenderTest.kt`
-- [ ] T015 [P] [US1] Composable test: selecionar uma porta de saída e uma porta de
+      `ui-desktop/src/commonTest/kotlin/dev/muzziknod/ui/graph/GraphViewTest.kt`
+      (implemented as `rendersModulesPortsAndConnectionsFromState` — T014-T017 landed
+      together in one `GraphViewTest.kt` file rather than four, since they share the
+      same fixtures)
+- [X] T015 [P] [US1] Composable test: selecionar uma porta de saída e uma porta de
       entrada compatíveis invoca `onConnect` com os IDs corretos (US1 AC1) in
-      `ui-desktop/src/commonTest/kotlin/dev/muzziknod/ui/graph/GraphViewConnectTest.kt`
-- [ ] T016 [P] [US1] Composable test: acionar remoção de uma conexão exibida invoca
+      `ui-desktop/src/commonTest/kotlin/dev/muzziknod/ui/graph/GraphViewTest.kt`
+      (`selectingOutputThenInputPortInvokesOnConnectWithCorrectIds`)
+- [X] T016 [P] [US1] Composable test: acionar remoção de uma conexão exibida invoca
       `onDisconnect` com o `connectionId` correto (US1 AC2) in
-      `ui-desktop/src/commonTest/kotlin/dev/muzziknod/ui/graph/GraphViewDisconnectTest.kt`
-- [ ] T017 [P] [US1] Composable test: quando `onConnect` é invocado com um retorno
+      `ui-desktop/src/commonTest/kotlin/dev/muzziknod/ui/graph/GraphViewTest.kt`
+      (`clickingDisconnectInvokesOnDisconnectWithCorrectConnectionId`)
+- [X] T017 [P] [US1] Composable test: quando `onConnect` é invocado com um retorno
       `ConnectResult.Rejected(reason)` simulado, a view exibe o motivo e o `HostUiState`
       de entrada permanece inalterado (FR-005, SC-004; US1 AC3) in
-      `ui-desktop/src/commonTest/kotlin/dev/muzziknod/ui/graph/GraphViewRejectionTest.kt`
+      `ui-desktop/src/commonTest/kotlin/dev/muzziknod/ui/graph/GraphViewTest.kt`
+      (`rejectedConnectShowsReasonWithoutMutatingInputState`)
 
 ### Implementation for User Story 1
 
-- [ ] T018 [US1] Implement `GraphView` Composable — renderiza módulos (nome, tipo,
+- [X] T018 [US1] Implement `GraphView` Composable — renderiza módulos (nome, tipo,
       portas) e conexões a partir de `HostUiState`, seleção explícita de porta origem →
       porta destino (per research.md §3 mecanismo mais simples), chama `onConnect`/
       `onDisconnect` (contracts/ui-composables-contract.md) in
       `ui-desktop/src/commonMain/kotlin/dev/muzziknod/ui/graph/GraphView.kt` (depends on
-      T010; satisfies T014-T016)
-- [ ] T019 [US1] Add rejection-reason display state to `GraphView` — ao receber
+      T010; satisfies T014-T016). Note: `onConnect`'s signature was corrected from
+      `-> Unit` to `-> ConnectResult` in contracts/ui-composables-contract.md during
+      implementation — `GraphView` needs the result synchronously to show a rejection
+      reason, and `HostViewModel.connect` already returns `ConnectResult`.
+- [X] T019 [US1] Add rejection-reason display state to `GraphView` — ao receber
       `ConnectResult.Rejected` do callback `onConnect`, exibe a mensagem sem mutar a
       visualização do grafo (FR-005) in `GraphView.kt` (depends on T018; satisfies T017)
-- [ ] T020 [US1] Wire `GraphView` into `Main.kt`, passing `HostViewModel.uiState
+- [X] T020 [US1] Wire `GraphView` into `Main.kt`, passing `HostViewModel.uiState
       .collectAsState()` and `HostViewModel::connect`/`HostViewModel::disconnect` as
       callbacks in
       `ui-desktop/src/jvmMain/kotlin/dev/muzziknod/ui/desktop/Main.kt` (depends on T011,
       T013, T018)
-- [ ] T021 [US1] Implement the empty-state view (Edge Case do spec — host sem módulos
+- [X] T021 [US1] Implement the empty-state view (Edge Case do spec — host sem módulos
       orienta a adicionar um pelo catálogo) in `GraphView.kt` (depends on T018)
 
 **Checkpoint**: US1 totalmente funcional e testável de forma independente —

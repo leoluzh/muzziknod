@@ -12,6 +12,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import dev.muzziknod.host.graph.RoutingGraph
 import dev.muzziknod.host.lifecycle.ModuleRegistry
+import dev.muzziknod.ui.graph.GraphView
 import dev.muzziknod.ui.state.HostViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,18 +30,22 @@ fun main() = application {
 }
 
 /**
- * Root Composable. Wired up incrementally as each user story lands: US1 (T020) adds
- * [dev.muzziknod.ui.graph.GraphView], US3 (T040) adds
- * [dev.muzziknod.ui.catalog.ModuleCatalog] for the empty-host state.
+ * Root Composable. Wired up incrementally as each user story lands: US1 wires in
+ * [GraphView] below; US3 (T040) adds [dev.muzziknod.ui.catalog.ModuleCatalog] for the
+ * empty-host state.
  */
 @Composable
 fun App(viewModel: HostViewModel) {
     MaterialTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            // Placeholder until T020 wires in GraphView — the Foundational
-            // checkpoint only requires the window to open and observe uiState.
             val state by viewModel.uiState.collectAsState()
-            Box(modifier = Modifier.fillMaxSize()) {}
+            Box(modifier = Modifier.fillMaxSize()) {
+                GraphView(
+                    state = state,
+                    onConnect = viewModel::connect,
+                    onDisconnect = viewModel::disconnect,
+                )
+            }
         }
     }
 }
