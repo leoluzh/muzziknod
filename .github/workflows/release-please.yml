@@ -17,7 +17,7 @@ jobs:
       # events fire other workflows, to avoid infinite loops). If you want CI to
       # run on the release PR too, create a PAT with repo scope, store it as the
       # RELEASE_PLEASE_TOKEN secret, and swap the token below.
-      - uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@v5
         with:
           token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
           config-file: release-please-config.json
