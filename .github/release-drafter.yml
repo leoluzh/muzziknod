@@ -1,0 +1,49 @@
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+
+categories:
+  - title: '🚀 Features'
+    labels:
+      - 'feat'
+  - title: '🐛 Bug Fixes'
+    labels:
+      - 'fix'
+  - title: '📦 Dependencies'
+    labels:
+      - 'dependencies'
+  - title: '📝 Documentation'
+    labels:
+      - 'docs'
+  - title: '🧹 Chores'
+    labels:
+      - 'chore'
+      - 'refactor'
+      - 'test'
+
+exclude-labels:
+  - 'needs-triage'
+
+change-template: '- $TITLE (#$NUMBER) @$AUTHOR'
+change-title-escapes: '\<*_&'
+
+version-resolver:
+  major:
+    labels:
+      - 'breaking-change'
+  minor:
+    labels:
+      - 'feat'
+  patch:
+    labels:
+      - 'fix'
+      - 'chore'
+      - 'docs'
+      - 'refactor'
+      - 'test'
+      - 'dependencies'
+  default: patch
+
+template: |
+  ## Changes
+
+  $CHANGES
