@@ -1,10 +1,12 @@
 package dev.muzziknod.ui.desktop
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -13,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import dev.muzziknod.host.graph.RoutingGraph
@@ -43,26 +46,25 @@ fun App(viewModel: HostViewModel) {
     MaterialTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             val state by viewModel.uiState.collectAsState()
-            Box(modifier = Modifier.fillMaxSize()) {
-                Column {
-                    ModuleCatalog(entries = defaultModuleCatalog(), onAdd = viewModel::addModule)
-                    GraphView(
-                        state = state,
-                        onConnect = viewModel::connect,
-                        onDisconnect = viewModel::disconnect,
-                    )
-                    for (module in state.modules) {
-                        Row {
-                            ModuleControls(module.instanceId, module.typeName, viewModel, module.pendingRemoval)
-                            Text(
-                                text = "remover módulo",
-                                modifier = Modifier
-                                    .testTag("remove-module-${module.instanceId}")
-                                    .clickable(enabled = !module.pendingRemoval) {
-                                        viewModel.removeModule(module.instanceId)
-                                    },
-                            )
-                        }
+            Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+                ModuleCatalog(entries = defaultModuleCatalog(), onAdd = viewModel::addModule)
+                GraphView(
+                    state = state,
+                    onConnect = viewModel::connect,
+                    onDisconnect = viewModel::disconnect,
+                )
+                for (module in state.modules) {
+                    Column {
+                        Text(
+                            text = "${module.typeName} (${module.instanceId}) — remover módulo",
+                            modifier = Modifier
+                                .testTag("remove-module-${module.instanceId}")
+                                .clickable(enabled = !module.pendingRemoval) {
+                                    viewModel.removeModule(module.instanceId)
+                                },
+                        )
+                        ModuleControls(module.instanceId, module.typeName, viewModel, module.pendingRemoval)
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
             }
