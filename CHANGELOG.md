@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.0.0 (2026-07-27)
+
+
+### Features
+
+* add audio effects module (003-audio-effects) ([cfabff5](https://github.com/leoluzh/muzziknod/commit/cfabff50b3b3b5a9cf4b7a4a9f7ede2377dfd636))
+* add audio effects module (003-audio-effects) ([c39eea5](https://github.com/leoluzh/muzziknod/commit/c39eea5b9da6859f0d52641a09ec20e0ade52f52))
+* add MIDI sequencer module (002-midi-sequencer) ([52b04ea](https://github.com/leoluzh/muzziknod/commit/52b04eaa4e2511068c151465e9c318ea1377e93b))
+* MIDI sequencer module (002-midi-sequencer) ([f962dfd](https://github.com/leoluzh/muzziknod/commit/f962dfd8443555f4b287896ea649cf67f8e1799f))
+
+
+### Bug Fixes
+
+* run release-drafter only on push to main ([d995c17](https://github.com/leoluzh/muzziknod/commit/d995c17a6eba07fd48c774b84e6721850a7267df))
+* run release-drafter only on push to main ([227c564](https://github.com/leoluzh/muzziknod/commit/227c5645362b951bb093ea67077b6114c7adf264))
+
+## Changelog
+
 All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
