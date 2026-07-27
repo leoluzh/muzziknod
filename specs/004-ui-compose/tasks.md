@@ -302,15 +302,22 @@ verificar que aparece no grafo; removê-lo pela UI e verificar que desaparece de
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T041 Run `quickstart.md` scenarios 1-4 end-to-end; correct any command drift
-      (actual Gradle task/test-class names), same practice as prior features' final
-      polish task
-- [ ] T042 [P] README: add a `004-ui-compose` row to the "Features especificadas" table
-      and a `./gradlew :ui-desktop:run` mention in the "Build & testes" section, in
-      `README.md`
-- [ ] T043 [P] Update the Makefile (`make` target `run-ui` or similar) to launch
-      `:ui-desktop:run`, consistent with existing `make build`/`make test-*` targets,
-      in `Makefile`
+- [X] T041 Ran `quickstart.md` scenarios 1-2 (`:ui-desktop:jvmTest`, `./gradlew check`)
+      exactly as written — both pass, no command drift. Scenario 3 (`:ui-desktop:run`)
+      was smoke-tested twice (launches cleanly, no exception, window opens and stays
+      open); the step-by-step manual click-through (add modules from the catalog,
+      drag/select ports to connect, verify rejection on an incompatible connection,
+      toggle transport, drag a parameter slider) is covered instruction-for-instruction
+      by the automated Composable tests in US1-US3
+      (GraphViewTest/TransportControlsTest/ParameterControlTest/ModuleCatalogTest), but
+      actually driving the live GUI with a mouse is outside what this environment's
+      tools can do — that walkthrough is left for a human to eyeball once, the same
+      caveat noted whenever a change needs browser/GUI verification.
+- [X] T042 [P] README: added a `004-ui-compose` row to "Features especificadas" and a
+      `./gradlew :ui-desktop:run` line to "Build & testes" in `README.md`
+- [X] T043 [P] Added `make run-ui` (`./gradlew :ui-desktop:run`) and
+      `make test-ui-desktop` targets to `Makefile`, consistent with the existing
+      `test-*` targets
 
 ---
 

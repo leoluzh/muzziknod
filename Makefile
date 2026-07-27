@@ -6,8 +6,8 @@ endif
 .DEFAULT_GOAL := help
 .PHONY: help build check clean test jvmTest \
 	test-core-host test-midi-sequencer test-audio-effects \
-	test-oscillator test-midi-generator test-midi-logger \
-	devbox-shell devbox-build devbox-test tasks
+	test-oscillator test-midi-generator test-midi-logger test-ui-desktop \
+	run-ui devbox-shell devbox-build devbox-test tasks
 
 GRADLEW := ./gradlew
 
@@ -26,6 +26,9 @@ help: ## Lista todos os comandos disponiveis
 	@echo "  make test-oscillator        - testes JVM apenas de :reference-modules:oscillator"
 	@echo "  make test-midi-generator    - testes JVM apenas de :reference-modules:midi-generator"
 	@echo "  make test-midi-logger       - testes JVM apenas de :reference-modules:midi-logger"
+	@echo "  make test-ui-desktop        - testes JVM apenas de :ui-desktop"
+	@echo ""
+	@echo "  make run-ui                 - ./gradlew :ui-desktop:run (abre a UI Compose Desktop)"
 	@echo ""
 	@echo "  make tasks                  - ./gradlew tasks --all (lista todas as tasks Gradle)"
 	@echo ""
@@ -64,6 +67,12 @@ test-midi-generator: ## Testes JVM de :reference-modules:midi-generator
 
 test-midi-logger: ## Testes JVM de :reference-modules:midi-logger
 	$(GRADLEW) :reference-modules:midi-logger:jvmTest;
+
+test-ui-desktop: ## Testes JVM de :ui-desktop
+	$(GRADLEW) :ui-desktop:jvmTest;
+
+run-ui: ## Abre a UI Compose Desktop do host modular
+	$(GRADLEW) :ui-desktop:run;
 
 tasks: ## Lista todas as tasks Gradle disponiveis (todos os modulos)
 	$(GRADLEW) tasks --all;
