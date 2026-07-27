@@ -18,7 +18,7 @@ is implemented.
 ## Scenario 1 — Wet/dry mix (US1)
 
 ```bash
-./gradlew :modules:audio-effects:jvmTest --tests "*WetDryMixTest*"
+./gradlew :modules:audio-effects:jvmTest --tests "*WetDryMixTest*" --tests "*SilentInputTest*"
 ```
 
 Expected: for each of the four module types, `mix = 0.0` produces output
@@ -30,7 +30,7 @@ output without error (FR-014).
 ## Scenario 2 — Live parameter changes (US2)
 
 ```bash
-./gradlew :modules:audio-effects:jvmTest --tests "*ParameterSmoothingTest*" --tests "*ReverbDspTest*" --tests "*DelayDspTest*" --tests "*DistortionDspTest*" --tests "*EqDspTest*"
+./gradlew :modules:audio-effects:jvmTest --tests "*ParameterSmoothingTest*" --tests "*ReverbDspTest*" --tests "*DelayDspTest*" --tests "*DistortionDspTest*" --tests "*EqDspTest*" --tests "*ParameterClampingTest*"
 ```
 
 Expected: changing any setter (e.g. `DelayModule.setDelayTimeMs`,
@@ -42,7 +42,7 @@ Edge Cases).
 ## Scenario 3 — Chain multiple effects via the routing graph (US3)
 
 ```bash
-./gradlew :modules:audio-effects:jvmTest --tests "*EffectsChainRoutingTest*"
+./gradlew :modules:audio-effects:jvmTest --tests "*EffectsChain*"
 ```
 
 Expected: a generator module, one instance of each of the four effect types,

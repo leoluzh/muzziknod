@@ -25,10 +25,10 @@ same dependency reasoning 002-midi-sequencer used for its own P1 stories.
 
 ## Phase 1: Setup (Shared Infrastructure)
 
-- [ ] T001 Add `modules:audio-effects` to root `settings.gradle.kts`; create
+- [X] T001 Add `modules:audio-effects` to root `settings.gradle.kts`; create
       `modules/audio-effects/` directory skeleton (`src/commonMain/kotlin/dev/muzziknod/modules/audioeffects/`,
       `src/commonTest/kotlin/dev/muzziknod/modules/audioeffects/`)
-- [ ] T002 [P] Create `modules/audio-effects/build.gradle.kts` — KMP plugin, `jvm()`
+- [X] T002 [P] Create `modules/audio-effects/build.gradle.kts` — KMP plugin, `jvm()`
       target (same JVM target as `core-host`/`modules/midi-sequencer`), depends on
       `core-host`, `kotlin.test` + `kotlin-test-junit5` on `commonTest`,
       `useJUnitPlatform()`
@@ -43,39 +43,39 @@ same dependency reasoning 002-midi-sequencer used for its own P1 stories.
 passthrough `process()`) every user story builds on. No user story work starts before
 this phase is done.
 
-- [ ] T003 [P] Implement `ParameterSmoother` (linear ramp of a `Double` toward a
+- [X] T003 [P] Implement `ParameterSmoother` (linear ramp of a `Double` toward a
       target over a fixed sample window, per data-model.md) in
       `modules/audio-effects/src/commonMain/kotlin/dev/muzziknod/modules/audioeffects/ParameterSmoother.kt`
-- [ ] T004 [P] Implement `WetDryMixer` (stateless `dry * (1 - mix) + wet * mix`
+- [X] T004 [P] Implement `WetDryMixer` (stateless `dry * (1 - mix) + wet * mix`
       crossfade, per data-model.md) in
       `modules/audio-effects/src/commonMain/kotlin/dev/muzziknod/modules/audioeffects/WetDryMixer.kt`
-- [ ] T005 [P] `ReverbModule` skeleton implementing `core-host`'s `Module` unchanged:
+- [X] T005 [P] `ReverbModule` skeleton implementing `core-host`'s `Module` unchanged:
       `instanceId`, `contract` (`typeId = "reverb"`, `in`/`out` Audio `PortSpec`s,
       `mix`/`decayMs`/`roomSize` `ParameterSpec`s per data-model.md), `onLoad()`
       allocates buffers, `process()` copies `in` straight to `out` (passthrough
       placeholder), `onRemove()` no-op, in
       `modules/audio-effects/src/commonMain/kotlin/dev/muzziknod/modules/audioeffects/ReverbModule.kt`
-- [ ] T006 [P] `DelayModule` skeleton, same shape as T005 (`typeId = "delay"`,
+- [X] T006 [P] `DelayModule` skeleton, same shape as T005 (`typeId = "delay"`,
       `mix`/`delayTimeMs`/`feedback` `ParameterSpec`s, passthrough `process()`), in
       `modules/audio-effects/src/commonMain/kotlin/dev/muzziknod/modules/audioeffects/DelayModule.kt`
-- [ ] T007 [P] `DistortionModule` skeleton, same shape as T005 (`typeId =
+- [X] T007 [P] `DistortionModule` skeleton, same shape as T005 (`typeId =
       "distortion"`, `mix`/`drive`/`tone` `ParameterSpec`s, passthrough `process()`),
       in
       `modules/audio-effects/src/commonMain/kotlin/dev/muzziknod/modules/audioeffects/DistortionModule.kt`
-- [ ] T008 [P] `EqModule` skeleton with `EqBand` enum (`Low`, `Mid`, `High`), same
+- [X] T008 [P] `EqModule` skeleton with `EqBand` enum (`Low`, `Mid`, `High`), same
       shape as T005 (`typeId = "eq"`, 9 `ParameterSpec`s — freq/gain/Q per band per
       data-model.md, no `mix` parameter, passthrough `process()`), in
       `modules/audio-effects/src/commonMain/kotlin/dev/muzziknod/modules/audioeffects/EqModule.kt`
-- [ ] T009 [P] Subclass `core-host`'s `ModuleContractComplianceTests` for
+- [X] T009 [P] Subclass `core-host`'s `ModuleContractComplianceTests` for
       `ReverbModule` (depends on T005) in
       `modules/audio-effects/src/commonTest/kotlin/dev/muzziknod/modules/audioeffects/ReverbContractTest.kt`
-- [ ] T010 [P] Subclass `ModuleContractComplianceTests` for `DelayModule` (depends on
+- [X] T010 [P] Subclass `ModuleContractComplianceTests` for `DelayModule` (depends on
       T006) in
       `modules/audio-effects/src/commonTest/kotlin/dev/muzziknod/modules/audioeffects/DelayContractTest.kt`
-- [ ] T011 [P] Subclass `ModuleContractComplianceTests` for `DistortionModule`
+- [X] T011 [P] Subclass `ModuleContractComplianceTests` for `DistortionModule`
       (depends on T007) in
       `modules/audio-effects/src/commonTest/kotlin/dev/muzziknod/modules/audioeffects/DistortionContractTest.kt`
-- [ ] T012 [P] Subclass `ModuleContractComplianceTests` for `EqModule` (depends on
+- [X] T012 [P] Subclass `ModuleContractComplianceTests` for `EqModule` (depends on
       T008) in
       `modules/audio-effects/src/commonTest/kotlin/dev/muzziknod/modules/audioeffects/EqContractTest.kt`
 
@@ -97,31 +97,31 @@ contains no trace of the dry signal, `mix = 0.5` is a proportional blend.
 
 ### Tests for User Story 1
 
-- [ ] T013 [P] [US1] Integration test: for each of the four module types, `mix = 0.0`
+- [X] T013 [P] [US1] Integration test: for each of the four module types, `mix = 0.0`
       output is sample-identical to input, `mix = 1.0` output has no dry-signal
       component, `mix = 0.5` output is a proportional blend (FR-003, FR-004, FR-005;
       SC-001, SC-002; US1 AC1-3) in
       `modules/audio-effects/src/commonTest/kotlin/dev/muzziknod/modules/audioeffects/WetDryMixTest.kt`
-- [ ] T014 [P] [US1] Integration test: for each of the four module types, no input
+- [X] T014 [P] [US1] Integration test: for each of the four module types, no input
       connected (`readAudio` returns an empty buffer) produces silent output with no
       exception (FR-014; Edge Cases) in
       `modules/audio-effects/src/commonTest/kotlin/dev/muzziknod/modules/audioeffects/SilentInputTest.kt`
 
 ### Implementation for User Story 1
 
-- [ ] T015 [US1] Implement `DelayLine` circular buffer and replace `DelayModule`'s
+- [X] T015 [US1] Implement `DelayLine` circular buffer and replace `DelayModule`'s
       passthrough `process()` with the real single-tap delay (write, read at
       `delayTimeMs`-derived offset, apply `feedback`, blend via `WetDryMixer` using
       current `mix`) (FR-006, FR-009) in `DelayModule.kt` (depends on T004, T006)
-- [ ] T016 [US1] Implement `CombFilter`/`AllpassFilter` and replace `ReverbModule`'s
+- [X] T016 [US1] Implement `CombFilter`/`AllpassFilter` and replace `ReverbModule`'s
       passthrough `process()` with the real Schroeder reverb (4 parallel combs → 2
       series allpass, `roomSize`/`decayMs`-derived coefficients), blend via
       `WetDryMixer` (FR-007, FR-009) in `ReverbModule.kt` (depends on T004, T005)
-- [ ] T017 [US1] Replace `DistortionModule`'s passthrough `process()` with the real
+- [X] T017 [US1] Replace `DistortionModule`'s passthrough `process()` with the real
       soft-clip waveshaper (`tanh(drive * x) / tanh(drive)`) followed by a one-pole
       lowpass `tone` filter, blend via `WetDryMixer` (FR-008) in
       `DistortionModule.kt` (depends on T004, T007)
-- [ ] T018 [US1] Implement `Biquad` (RBJ peaking-EQ coefficients) and replace
+- [X] T018 [US1] Implement `Biquad` (RBJ peaking-EQ coefficients) and replace
       `EqModule`'s passthrough `process()` with 3 bands run in series (no `mix`
       crossfade — 0 dB gain on every band is already passthrough) (FR-009) in
       `EqModule.kt` (depends on T008)
@@ -143,41 +143,41 @@ reflected within the smoothing window with no sample-to-sample jump beyond it.
 
 ### Tests for User Story 2
 
-- [ ] T019 [P] [US2] Unit test: `ParameterSmoother.advance()` ramps linearly toward
+- [X] T019 [P] [US2] Unit test: `ParameterSmoother.advance()` ramps linearly toward
       a new target within its window and holds exactly at target once reached, no
       overshoot/oscillation (FR-005, FR-010; SC-003) in
       `modules/audio-effects/src/commonTest/kotlin/dev/muzziknod/modules/audioeffects/ParameterSmoothingTest.kt`
-- [ ] T020 [P] [US2] Integration test: `setDecayMs`/`setRoomSize` on `ReverbModule`
+- [X] T020 [P] [US2] Integration test: `setDecayMs`/`setRoomSize` on `ReverbModule`
       change output behavior across subsequent cycles without interrupting
       processing (US2 AC2) in
       `modules/audio-effects/src/commonTest/kotlin/dev/muzziknod/modules/audioeffects/ReverbDspTest.kt`
-- [ ] T021 [P] [US2] Integration test: `setDelayTimeMs`/`setFeedback` on
+- [X] T021 [P] [US2] Integration test: `setDelayTimeMs`/`setFeedback` on
       `DelayModule` change output behavior; delay timing stays correct across
       44.1kHz/48kHz/96kHz `sampleRate` constructor values (FR-009; US2 AC1) in
       `modules/audio-effects/src/commonTest/kotlin/dev/muzziknod/modules/audioeffects/DelayDspTest.kt`
-- [ ] T022 [P] [US2] Integration test: `setDrive`/`setTone` on `DistortionModule`
+- [X] T022 [P] [US2] Integration test: `setDrive`/`setTone` on `DistortionModule`
       change output behavior across subsequent cycles (US2 AC3) in
       `modules/audio-effects/src/commonTest/kotlin/dev/muzziknod/modules/audioeffects/DistortionDspTest.kt`
-- [ ] T023 [P] [US2] Integration test: `setBandFrequency`/`setBandGain`/`setBandQ`
+- [X] T023 [P] [US2] Integration test: `setBandFrequency`/`setBandGain`/`setBandQ`
       per `EqBand` on `EqModule` change output behavior across subsequent cycles
       (US2 AC4) in
       `modules/audio-effects/src/commonTest/kotlin/dev/muzziknod/modules/audioeffects/EqDspTest.kt`
-- [ ] T024 [P] [US2] Integration test: out-of-range setter arguments are clamped to
+- [X] T024 [P] [US2] Integration test: out-of-range setter arguments are clamped to
       the declared `ParameterSpec.range` on all four module types, never throw
       (FR-013; US2 AC5, Edge Cases) in
       `modules/audio-effects/src/commonTest/kotlin/dev/muzziknod/modules/audioeffects/ParameterClampingTest.kt`
 
 ### Implementation for User Story 2
 
-- [ ] T025 [US2] Add `setMix`/`setDelayTimeMs`/`setFeedback` to `DelayModule`,
+- [X] T025 [US2] Add `setMix`/`setDelayTimeMs`/`setFeedback` to `DelayModule`,
       each clamping to its `ParameterSpec.range` and routing through a
       `ParameterSmoother` (FR-005, FR-010, FR-013) in `DelayModule.kt` (depends on
       T003, T015)
-- [ ] T026 [US2] Add `setMix`/`setDecayMs`/`setRoomSize` to `ReverbModule`, same
+- [X] T026 [US2] Add `setMix`/`setDecayMs`/`setRoomSize` to `ReverbModule`, same
       clamp+smooth pattern as T025 in `ReverbModule.kt` (depends on T003, T016)
-- [ ] T027 [US2] Add `setMix`/`setDrive`/`setTone` to `DistortionModule`, same
+- [X] T027 [US2] Add `setMix`/`setDrive`/`setTone` to `DistortionModule`, same
       clamp+smooth pattern as T025 in `DistortionModule.kt` (depends on T003, T017)
-- [ ] T028 [US2] Add `setBandFrequency`/`setBandGain`/`setBandQ` to `EqModule`
+- [X] T028 [US2] Add `setBandFrequency`/`setBandGain`/`setBandQ` to `EqModule`
       (recomputes the affected band's `Biquad` coefficients), clamped and smoothed
       per parameter, same pattern as T025 in `EqModule.kt` (depends on T003, T018)
 
@@ -198,14 +198,14 @@ the fully processed signal each cycle.
 
 ### Tests for User Story 3
 
-- [ ] T029 [US3] Integration test: load a generator test double + `EqModule` +
+- [X] T029 [US3] Integration test: load a generator test double + `EqModule` +
       `DistortionModule` + `DelayModule` + `ReverbModule` + a sink test double into a
       `core-host` `RoutingGraph`/`ModuleRegistry`, connect in sequence, run several
       cycles, verify the sink's recorded signal reflects processing by all four
       effects in connection order (FR-001, FR-011, FR-012; SC-004; US3 AC1) in
       `modules/audio-effects/src/commonTest/kotlin/dev/muzziknod/modules/audioeffects/EffectsChainRoutingTest.kt`
       (depends on T015, T016, T017, T018)
-- [ ] T030 [P] [US3] Integration test: removing one effect module from an active
+- [X] T030 [P] [US3] Integration test: removing one effect module from an active
       chain does not auto-reconnect its neighbors — same deferred-removal behavior
       already proven by `core-host` (FR-012; US3 AC2, mirrors 001-core-host FR-009)
       in
@@ -227,14 +227,14 @@ the fully processed signal each cycle.
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T031 [P] Stress test: a 4-effect chain processing continuously for a large
+- [X] T031 [P] Stress test: a 4-effect chain processing continuously for a large
       number of cycles (proxy for SC-003's 30-minute continuous-processing claim)
       with no exception/crash and stable output levels (no runaway feedback), in
       `modules/audio-effects/src/commonTest/kotlin/dev/muzziknod/modules/audioeffects/EffectsChainStressTest.kt`
-- [ ] T032 Run `quickstart.md` scenarios 1-5 end-to-end; correct any command drift
+- [X] T032 Run `quickstart.md` scenarios 1-5 end-to-end; correct any command drift
       (actual Gradle task/test-class names) the same way 001-core-host's T046 and
       002-midi-sequencer's T023 did
-- [ ] T033 [P] README: add a `003-audio-effects` row to the "Features especificadas"
+- [X] T033 [P] README: add a `003-audio-effects` row to the "Features especificadas"
       table and mention `modules:audio-effects` in the "Build & testes" section, in
       `README.md`
 
