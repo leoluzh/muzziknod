@@ -21,4 +21,5 @@ include(
     ":reference-modules:midi-generator",
     ":reference-modules:midi-logger",
     ":modules:midi-sequencer",
+    ":modules:audio-effects",
 )
