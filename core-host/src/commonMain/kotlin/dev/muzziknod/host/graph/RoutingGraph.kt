@@ -8,6 +8,9 @@ import dev.muzziknod.host.contract.PortType
 import dev.muzziknod.host.contract.ProcessContext
 import dev.muzziknod.host.lifecycle.ModuleRegistry
 import dev.muzziknod.host.lifecycle.ModuleState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 sealed class ConnectResult {
     data class Connected(val connection: Connection) : ConnectResult()
@@ -28,6 +31,15 @@ class RoutingGraph(private val registry: ModuleRegistry) {
 
     private var cycleInProgress = false
     private val pendingRemovals = mutableSetOf<String>()
+
+    private val _state = MutableStateFlow<List<Connection>>(emptyList())
+
+    /**
+     * Observable mirror of [connections] — emits a new snapshot after every [connect]/
+     * [disconnect]/[disconnectAllForModule]/[removeModule] call. Additive alongside
+     * [connections]; existing synchronous callers are unaffected (Constitution VI).
+     */
+    val state: StateFlow<List<Connection>> = _state.asStateFlow()
 
     fun connect(
         sourceInstanceId: String,
@@ -73,11 +85,13 @@ class RoutingGraph(private val registry: ModuleRegistry) {
             targetPortId = targetPortId,
         )
         connections[connection.id] = connection
+        publishState()
         return ConnectResult.Connected(connection)
     }
 
     fun disconnect(connectionId: String) {
         connections.remove(connectionId)
+        publishState()
     }
 
     /** Removes every connection touching [instanceId] (FR-009). */
@@ -85,6 +99,11 @@ class RoutingGraph(private val registry: ModuleRegistry) {
         connections.values
             .filter { it.sourceInstanceId == instanceId || it.targetInstanceId == instanceId }
             .forEach { connections.remove(it.id) }
+        publishState()
+    }
+
+    private fun publishState() {
+        _state.value = connections.values.toList()
     }
 
     fun connections(): Collection<Connection> = connections.values

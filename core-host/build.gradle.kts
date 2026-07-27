@@ -28,6 +28,11 @@ kotlin {
         commonMain.dependencies {
             api(libs.kotlin.test)
             api(libs.kotlin.test.junit5)
+            // Exposed as `api` (not `implementation`) because the observable
+            // StateFlow properties on ModuleRegistry/RoutingGraph are part of this
+            // module's public surface — downstream consumers (ui-desktop) need
+            // kotlinx.coroutines.flow.StateFlow on their compile classpath too.
+            api(libs.kotlinx.coroutines.core)
         }
     }
 }

@@ -4,12 +4,28 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
+        // Compose Multiplatform's desktop artifacts transitively pull androidx/Google
+        // Maven coordinates even for the JVM-only target used by :ui-desktop.
+        google {
+            mavenContent {
+                includeGroupAndSubgroups("androidx")
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
+            }
+        }
     }
 }
 
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
+        google {
+            mavenContent {
+                includeGroupAndSubgroups("androidx")
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
+            }
+        }
     }
 }
 
@@ -22,4 +38,5 @@ include(
     ":reference-modules:midi-logger",
     ":modules:midi-sequencer",
     ":modules:audio-effects",
+    ":ui-desktop",
 )

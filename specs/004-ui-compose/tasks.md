@@ -28,15 +28,15 @@ que já existe em Foundational (`ModuleRegistry.load`/`removeImmediately`).
 
 ## Phase 1: Setup (Shared Infrastructure)
 
-- [ ] T001 Add `:ui-desktop` to root `settings.gradle.kts`; create directory skeleton
+- [X] T001 Add `:ui-desktop` to root `settings.gradle.kts`; create directory skeleton
       (`ui-desktop/src/commonMain/kotlin/dev/muzziknod/ui/`,
       `ui-desktop/src/commonTest/kotlin/dev/muzziknod/ui/`,
       `ui-desktop/src/jvmMain/kotlin/dev/muzziknod/ui/desktop/`)
-- [ ] T002 Add `org.jetbrains.compose` (1.11.1) and `org.jetbrains.kotlin.plugin.compose`
+- [X] T002 Add `org.jetbrains.compose` (1.11.1) and `org.jetbrains.kotlin.plugin.compose`
       plugin coordinates to `pluginManagement` in root `settings.gradle.kts`; add
       `kotlinx-coroutines-core` version/library entry to `gradle/libs.versions.toml`
       (per research.md §1–2)
-- [ ] T003 [P] Create `ui-desktop/build.gradle.kts` — KMP plugin + `org.jetbrains
+- [X] T003 [P] Create `ui-desktop/build.gradle.kts` — KMP plugin + `org.jetbrains
       .compose` + `org.jetbrains.kotlin.plugin.compose`, single `jvm()` target (same
       JVM target as other modules), depends on `core-host`,
       `modules:midi-sequencer`, `modules:audio-effects`,
@@ -56,48 +56,48 @@ existing ones; Compose plugin resolves)
 `HostViewModel`/`GraphView` que toda user story consome. Nenhuma user story começa antes
 desta fase.
 
-- [ ] T004 [P] Add `kotlinx-coroutines-core` as an `api` dependency on `commonMain` of
+- [X] T004 [P] Add `kotlinx-coroutines-core` as an `api` dependency on `commonMain` of
       `core-host/build.gradle.kts`, `modules/midi-sequencer/build.gradle.kts`, and
       `modules/audio-effects/build.gradle.kts` (per research.md §1 — additive,
       `StateFlow` types must cross module boundaries as public API)
-- [ ] T005 [P] Add `ModuleRegistry.state: StateFlow<List<ManagedModule>>` to
+- [X] T005 [P] Add `ModuleRegistry.state: StateFlow<List<ManagedModule>>` to
       `core-host/src/commonMain/kotlin/dev/muzziknod/host/lifecycle/ModuleRegistry.kt`,
       backed by a `MutableStateFlow` updated at the same points `load()`/
       `removeImmediately()` already mutate the registry (contracts/host-observability-
       contract.md); `all()` unchanged
-- [ ] T006 [P] Add `RoutingGraph.state: StateFlow<List<Connection>>` to
+- [X] T006 [P] Add `RoutingGraph.state: StateFlow<List<Connection>>` to
       `core-host/src/commonMain/kotlin/dev/muzziknod/host/graph/RoutingGraph.kt`, backed
       by a `MutableStateFlow` updated at the same points `connect()`/`disconnect()`/
       `disconnectAllForModule()`/`removeModule()` already mutate the graph;
       `connections()` unchanged
-- [ ] T007 [P] Contract test: `ModuleRegistry.state.value` always equals `all().toList()`
+- [X] T007 [P] Contract test: `ModuleRegistry.state.value` always equals `all().toList()`
       immediately after `load()` and `removeImmediately()` (contracts/host-
       observability-contract.md invariant) in
       `core-host/src/commonTest/kotlin/dev/muzziknod/host/lifecycle/ModuleRegistryStateTest.kt`
       (depends on T005)
-- [ ] T008 [P] Contract test: `RoutingGraph.state.value` always equals
+- [X] T008 [P] Contract test: `RoutingGraph.state.value` always equals
       `connections().toList()` immediately after `connect()`/`disconnect()`/
       `disconnectAllForModule()`/`removeModule()` in
       `core-host/src/commonTest/kotlin/dev/muzziknod/host/graph/RoutingGraphStateTest.kt`
       (depends on T006)
-- [ ] T009 Run the existing `001-core-host`/`002-midi-sequencer`/`003-audio-effects`
+- [X] T009 Run the existing `001-core-host`/`002-midi-sequencer`/`003-audio-effects`
       test suites (`./gradlew check`) to confirm T004-T006 introduced zero regressions
       (Constitution VI — additive-only)
-- [ ] T010 [P] Create `HostUiState`/`ModuleUiModel`/`ModuleCatalogEntry` data classes
+- [X] T010 [P] Create `HostUiState`/`ModuleUiModel`/`ModuleCatalogEntry` data classes
       (data-model.md) in
       `ui-desktop/src/commonMain/kotlin/dev/muzziknod/ui/state/HostUiState.kt`
-- [ ] T011 `HostViewModel` skeleton — combines `ModuleRegistry.state` and
+- [X] T011 `HostViewModel` skeleton — combines `ModuleRegistry.state` and
       `RoutingGraph.state` (via `combine`) into `uiState: StateFlow<HostUiState>`;
       `connect`/`disconnect` delegate to `RoutingGraph`; `addModule`/`removeModule`
       delegate to `ModuleRegistry` (contracts/ui-composables-contract.md) in
       `ui-desktop/src/commonMain/kotlin/dev/muzziknod/ui/state/HostViewModel.kt`
       (depends on T005, T006, T010)
-- [ ] T012 [P] Unit test: `HostViewModel.uiState` reflects a `load()`/`connect()` made
+- [X] T012 [P] Unit test: `HostViewModel.uiState` reflects a `load()`/`connect()` made
       directly on the underlying `ModuleRegistry`/`RoutingGraph` within one `StateFlow`
       emission (SC-003) in
       `ui-desktop/src/commonTest/kotlin/dev/muzziknod/ui/state/HostViewModelTest.kt`
       (depends on T011)
-- [ ] T013 `Main.kt` entry point — `application { Window { ... } }` wiring a real
+- [X] T013 `Main.kt` entry point — `application { Window { ... } }` wiring a real
       `ModuleRegistry`/`RoutingGraph`/`HostViewModel` (contracts/ui-composables-
       contract.md) in
       `ui-desktop/src/jvmMain/kotlin/dev/muzziknod/ui/desktop/Main.kt` (depends on T011)

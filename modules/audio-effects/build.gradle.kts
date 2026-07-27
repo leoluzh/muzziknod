@@ -12,6 +12,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(project(":core-host"))
+            api(libs.kotlinx.coroutines.core)
         }
         commonTest.dependencies {
             implementation(project(":core-host"))
