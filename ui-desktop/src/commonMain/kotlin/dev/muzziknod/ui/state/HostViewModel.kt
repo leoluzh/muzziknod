@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.stateIn
  * touching [ModuleRegistry]/[RoutingGraph] directly (contracts/ui-composables-contract.md).
  */
 class HostViewModel(
-    private val registry: ModuleRegistry,
+    @PublishedApi internal val registry: ModuleRegistry,
     private val graph: RoutingGraph,
     scope: CoroutineScope,
 ) {
@@ -60,6 +60,17 @@ class HostViewModel(
     fun addModule(entry: ModuleCatalogEntry) {
         registry.load(entry.factory())
     }
+
+    /**
+     * Looks up the concrete [Module] instance behind [instanceId] so a Composable can
+     * bind directly to its module-specific `StateFlow`s (e.g. `MidiSequencerModule
+     * .transportState`, `DelayModule.mix`) — those are typed per module and don't fit a
+     * single uniform interface, so this is the escape hatch `Main.kt`'s wiring uses
+     * instead of `HostUiState` trying to model every module's parameter shape
+     * (Constitution VII — no speculative uniform abstraction).
+     */
+    inline fun <reified T : Module> moduleInstance(instanceId: String): T? =
+        registry.get(instanceId)?.module as? T
 
     /**
      * Marks [instanceId] pending before asking the host to remove it. If the host

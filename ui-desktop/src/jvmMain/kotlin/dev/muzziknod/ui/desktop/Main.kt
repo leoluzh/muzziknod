@@ -1,6 +1,7 @@
 package dev.muzziknod.ui.desktop
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -12,6 +13,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import dev.muzziknod.host.graph.RoutingGraph
 import dev.muzziknod.host.lifecycle.ModuleRegistry
+import dev.muzziknod.ui.controls.ModuleControls
 import dev.muzziknod.ui.graph.GraphView
 import dev.muzziknod.ui.state.HostViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -40,11 +42,16 @@ fun App(viewModel: HostViewModel) {
         Surface(modifier = Modifier.fillMaxSize()) {
             val state by viewModel.uiState.collectAsState()
             Box(modifier = Modifier.fillMaxSize()) {
-                GraphView(
-                    state = state,
-                    onConnect = viewModel::connect,
-                    onDisconnect = viewModel::disconnect,
-                )
+                Column {
+                    GraphView(
+                        state = state,
+                        onConnect = viewModel::connect,
+                        onDisconnect = viewModel::disconnect,
+                    )
+                    for (module in state.modules) {
+                        ModuleControls(module.instanceId, module.typeName, viewModel)
+                    }
+                }
             }
         }
     }

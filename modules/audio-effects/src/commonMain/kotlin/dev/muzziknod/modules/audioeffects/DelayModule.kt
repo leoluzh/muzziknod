@@ -9,6 +9,9 @@ import dev.muzziknod.host.contract.PortDirection
 import dev.muzziknod.host.contract.PortSpec
 import dev.muzziknod.host.contract.PortType
 import dev.muzziknod.host.contract.ProcessContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 private const val INPUT_PORT_ID = "in"
 private const val OUTPUT_PORT_ID = "out"
@@ -75,6 +78,19 @@ class DelayModule(
     private val delayTimeSmoother = ParameterSmoother(375.0)
     private val feedbackSmoother = ParameterSmoother(0.3)
 
+    private val _mix = MutableStateFlow(mixSmoother.current)
+    private val _delayTimeMs = MutableStateFlow(delayTimeSmoother.current)
+    private val _feedback = MutableStateFlow(feedbackSmoother.current)
+
+    /**
+     * Observable mirrors of each parameter's live smoothed value
+     * (contracts/host-observability-contract.md) — updated once per [process] cycle
+     * (not per sample, to stay allocation-free in the hot path per Constitution III).
+     */
+    val mix: StateFlow<Double> = _mix.asStateFlow()
+    val delayTimeMs: StateFlow<Double> = _delayTimeMs.asStateFlow()
+    val feedback: StateFlow<Double> = _feedback.asStateFlow()
+
     private lateinit var delayLine: DelayLine
 
     // Allocated once in onLoad() and mutated/reused every process() call, per Constitution III.
@@ -106,6 +122,9 @@ class DelayModule(
             samples[i] = WetDryMixer.mix(dry, wet, mixSmoother.advance())
         }
         context.writeAudio(OUTPUT_PORT_ID, outputBuffer)
+        _mix.value = mixSmoother.current
+        _delayTimeMs.value = delayTimeSmoother.current
+        _feedback.value = feedbackSmoother.current
     }
 
     override fun onRemove() {

@@ -178,59 +178,69 @@ o próximo `process()` reflete o novo valor.
 
 ### Tests for User Story 2
 
-- [ ] T022 [P] [US2] Add `TransportState` data class + `MidiSequencerModule
+- [X] T022 [P] [US2] Add `TransportState` data class + `MidiSequencerModule
       .transportState: StateFlow<TransportState>` (contracts/host-observability-
       contract.md), backed by updates at the same points `play()`/`stop()`/step advance
       already mutate `Transport` in
       `modules/midi-sequencer/src/commonMain/kotlin/dev/muzziknod/modules/midisequencer/MidiSequencerModule.kt`
-- [ ] T023 [P] [US2] Contract test: `transportState.value.isPlaying`/`.currentStep`
+- [X] T023 [P] [US2] Contract test: `transportState.value.isPlaying`/`.currentStep`
       always match `isPlaying`/`currentStep` immediately after `play()`/`stop()`/a step
       advance in
       `modules/midi-sequencer/src/commonTest/kotlin/dev/muzziknod/modules/midisequencer/TransportStateTest.kt`
       (depends on T022)
-- [ ] T024 [P] [US2] Add a `StateFlow<Double>` per existing parameter (`mix`,
+- [X] T024 [P] [US2] Add a `StateFlow<Double>` per existing parameter (`mix`,
       `delayTimeMs`, `feedback`) to `DelayModule`, publishing `ParameterSmoother
       .current` after each `process()` (contracts/host-observability-contract.md) in
       `modules/audio-effects/src/commonMain/kotlin/dev/muzziknod/modules/audioeffects/DelayModule.kt`
-- [ ] T025 [P] [US2] Same pattern as T024 for `ReverbModule` (`mix`, `decayTime`,
-      `roomSize`) in
+- [X] T025 [P] [US2] Same pattern as T024 for `ReverbModule` (`mix`, `decayMs`,
+      `roomSize` — corrected from `decayTime` to match the module's actual field name)
+      in
       `modules/audio-effects/src/commonMain/kotlin/dev/muzziknod/modules/audioeffects/ReverbModule.kt`
-- [ ] T026 [P] [US2] Same pattern as T024 for `DistortionModule` (`mix`, `drive`,
+- [X] T026 [P] [US2] Same pattern as T024 for `DistortionModule` (`mix`, `drive`,
       `tone`) in
       `modules/audio-effects/src/commonMain/kotlin/dev/muzziknod/modules/audioeffects/DistortionModule.kt`
-- [ ] T027 [P] [US2] Same pattern as T024 for `EqModule` (`mix`, `bandGain(index)`,
-      `bandFrequency(index)`, `bandQ(index)`) in
+- [X] T027 [P] [US2] Same pattern as T024 for `EqModule` (`mix`, `bandGain(index)`,
+      `bandFrequency(index)`, `bandQ(index)` — implemented as
+      `bandGain(band: EqBand)`/etc. using the real `EqBand` enum parameter the module's
+      existing setters already take, not a raw `Int` index; `EqModule` has no `mix`
+      parameter at all — corrected to match the real contract, which has 9
+      per-band parameters and no mix) in
       `modules/audio-effects/src/commonMain/kotlin/dev/muzziknod/modules/audioeffects/EqModule.kt`
-- [ ] T028 [P] [US2] Contract test: for each of the four effect modules, the
+- [X] T028 [P] [US2] Contract test: for each of the four effect modules, the
       published `StateFlow<Double>` value matches the smoothed value after calling the
       corresponding `set...()` and running one `process()` cycle in
       `modules/audio-effects/src/commonTest/kotlin/dev/muzziknod/modules/audioeffects/ParameterStateFlowTest.kt`
       (depends on T024-T027)
-- [ ] T029 [P] [US2] Composable test: `TransportControls` renderiza estado play/stop e
+- [X] T029 [P] [US2] Composable test: `TransportControls` renderiza estado play/stop e
       invoca `onPlay`/`onStop` (US2 AC1-2) in
       `ui-desktop/src/commonTest/kotlin/dev/muzziknod/ui/transport/TransportControlsTest.kt`
-- [ ] T030 [P] [US2] Composable test: `ParameterControl` limita o valor exibido ao
+- [X] T030 [P] [US2] Composable test: `ParameterControl` limita o valor exibido ao
       `spec.range` e nunca invoca `onValueChange` fora desse intervalo, mesmo que o
       usuário arraste além do limite (FR-009; US2 AC3-4) in
       `ui-desktop/src/commonTest/kotlin/dev/muzziknod/ui/parameters/ParameterControlTest.kt`
 
 ### Implementation for User Story 2
 
-- [ ] T031 [US2] Implement `TransportControls` Composable per contracts/ui-composables-
+- [X] T031 [US2] Implement `TransportControls` Composable per contracts/ui-composables-
       contract.md in
       `ui-desktop/src/commonMain/kotlin/dev/muzziknod/ui/transport/TransportControls.kt`
       (depends on T022; satisfies T029)
-- [ ] T032 [US2] Implement `ParameterControl` Composable (slider clamped to `spec
+- [X] T032 [US2] Implement `ParameterControl` Composable (slider clamped to `spec
       .range`) per contracts/ui-composables-contract.md in
       `ui-desktop/src/commonMain/kotlin/dev/muzziknod/ui/parameters/ParameterControls.kt`
       (depends on T024-T027; satisfies T030)
-- [ ] T033 [US2] Extend `ModuleUiModel`/`HostUiState` (or a sibling per-module detail
-      lookup on `HostViewModel`) to expose the `transportState`/parameter `StateFlow`s
-      needed by `TransportControls`/`ParameterControl` for a selected module in
-      `ui-desktop/src/commonMain/kotlin/dev/muzziknod/ui/state/HostViewModel.kt`
+- [X] T033 [US2] Added `HostViewModel.moduleInstance<T>(instanceId)` (an
+      `inline`/`reified` escape hatch returning the concrete `Module` instance) instead
+      of extending `ModuleUiModel`/`HostUiState` — the per-module `StateFlow` shapes
+      (`transportState`, `mix`/`delayTimeMs`/..., per-band EQ lookups) are too
+      heterogeneous to fit one uniform field set without speculative over-abstraction
+      (Constitution VII); a new `ui/controls/ModuleControls.kt` Composable dispatches
+      on `typeName` and binds each module's own `StateFlow`s directly, in
+      `ui-desktop/src/commonMain/kotlin/dev/muzziknod/ui/state/HostViewModel.kt` and
+      `ui-desktop/src/commonMain/kotlin/dev/muzziknod/ui/controls/ModuleControls.kt`
       (depends on T011, T022, T024-T027)
-- [ ] T034 [US2] Wire `TransportControls`/`ParameterControls` into `Main.kt` for
-      modules that expose them (sequencer/effect instances) in
+- [X] T034 [US2] Wire `ModuleControls` (which internally uses `TransportControls`/
+      `ParameterControl`) into `Main.kt` for every loaded module in
       `ui-desktop/src/jvmMain/kotlin/dev/muzziknod/ui/desktop/Main.kt` (depends on T020,
       T031, T032, T033)
 

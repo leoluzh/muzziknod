@@ -9,6 +9,9 @@ import dev.muzziknod.host.contract.PortDirection
 import dev.muzziknod.host.contract.PortSpec
 import dev.muzziknod.host.contract.PortType
 import dev.muzziknod.host.contract.ProcessContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlin.math.pow
 
 private const val INPUT_PORT_ID = "in"
@@ -87,6 +90,15 @@ class ReverbModule(
     private val decaySmoother = ParameterSmoother(1500.0)
     private val roomSizeSmoother = ParameterSmoother(0.5)
 
+    private val _mix = MutableStateFlow(mixSmoother.current)
+    private val _decayMs = MutableStateFlow(decaySmoother.current)
+    private val _roomSize = MutableStateFlow(roomSizeSmoother.current)
+
+    /** Observable mirrors of each parameter's live smoothed value (contracts/host-observability-contract.md). */
+    val mix: StateFlow<Double> = _mix.asStateFlow()
+    val decayMs: StateFlow<Double> = _decayMs.asStateFlow()
+    val roomSize: StateFlow<Double> = _roomSize.asStateFlow()
+
     private lateinit var combs: List<CombFilter>
     private lateinit var combDelaySamples: List<Int>
     private lateinit var allpasses: List<AllpassFilter>
@@ -140,6 +152,9 @@ class ReverbModule(
             samples[i] = WetDryMixer.mix(dry, wet, mix)
         }
         context.writeAudio(OUTPUT_PORT_ID, outputBuffer)
+        _mix.value = mixSmoother.current
+        _decayMs.value = decaySmoother.current
+        _roomSize.value = roomSizeSmoother.current
     }
 
     override fun onRemove() {

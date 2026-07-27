@@ -44,7 +44,7 @@ val feedback: StateFlow<Double>
 
 // ReverbModule
 val mix: StateFlow<Double>
-val decayTime: StateFlow<Double>
+val decayMs: StateFlow<Double>
 val roomSize: StateFlow<Double>
 
 // DistortionModule
@@ -52,11 +52,12 @@ val mix: StateFlow<Double>
 val drive: StateFlow<Double>
 val tone: StateFlow<Double>
 
-// EqModule
-val mix: StateFlow<Double>
-fun bandGain(index: Int): StateFlow<Double>
-fun bandFrequency(index: Int): StateFlow<Double>
-fun bandQ(index: Int): StateFlow<Double>
+// EqModule — no `mix` parameter (0 dB gain on every band is already passthrough,
+// see 003-audio-effects spec Edge Cases); takes the module's own `EqBand` enum
+// (Low/Mid/High), not a raw Int index, matching setBandFrequency/setBandGain/setBandQ
+fun bandFrequency(band: EqBand): StateFlow<Double>
+fun bandGain(band: EqBand): StateFlow<Double>
+fun bandQ(band: EqBand): StateFlow<Double>
 ```
 - Cada `StateFlow` reflete o valor `current` já suavizado por `ParameterSmoother`,
   atualizado a cada `process()`.

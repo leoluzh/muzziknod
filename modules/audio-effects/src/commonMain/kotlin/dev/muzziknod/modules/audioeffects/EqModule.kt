@@ -9,6 +9,9 @@ import dev.muzziknod.host.contract.PortDirection
 import dev.muzziknod.host.contract.PortSpec
 import dev.muzziknod.host.contract.PortType
 import dev.muzziknod.host.contract.ProcessContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.pow
@@ -133,6 +136,15 @@ class EqModule(
     private val bandGainSmoothers = EqBand.entries.associateWith { ParameterSmoother(BAND_DEFAULTS.getValue(it).gainDb) }
     private val bandQSmoothers = EqBand.entries.associateWith { ParameterSmoother(BAND_DEFAULTS.getValue(it).q) }
 
+    private val _bandFrequency = EqBand.entries.associateWith { MutableStateFlow(bandFrequencySmoothers.getValue(it).current) }
+    private val _bandGain = EqBand.entries.associateWith { MutableStateFlow(bandGainSmoothers.getValue(it).current) }
+    private val _bandQ = EqBand.entries.associateWith { MutableStateFlow(bandQSmoothers.getValue(it).current) }
+
+    /** Observable mirrors of each band's live smoothed value (contracts/host-observability-contract.md). */
+    fun bandFrequency(band: EqBand): StateFlow<Double> = _bandFrequency.getValue(band).asStateFlow()
+    fun bandGain(band: EqBand): StateFlow<Double> = _bandGain.getValue(band).asStateFlow()
+    fun bandQ(band: EqBand): StateFlow<Double> = _bandQ.getValue(band).asStateFlow()
+
     private lateinit var biquads: Map<EqBand, Biquad>
 
     // Allocated once in onLoad() and mutated/reused every process() call, per Constitution III.
@@ -171,6 +183,11 @@ class EqModule(
             samples[i] = sample
         }
         context.writeAudio(OUTPUT_PORT_ID, outputBuffer)
+        for (band in EqBand.entries) {
+            _bandFrequency.getValue(band).value = bandFrequencySmoothers.getValue(band).current
+            _bandGain.getValue(band).value = bandGainSmoothers.getValue(band).current
+            _bandQ.getValue(band).value = bandQSmoothers.getValue(band).current
+        }
     }
 
     override fun onRemove() {

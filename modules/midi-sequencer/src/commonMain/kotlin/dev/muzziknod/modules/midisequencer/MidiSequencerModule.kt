@@ -7,6 +7,12 @@ import dev.muzziknod.host.contract.PortDirection
 import dev.muzziknod.host.contract.PortSpec
 import dev.muzziknod.host.contract.PortType
 import dev.muzziknod.host.contract.ProcessContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+
+/** UI-facing snapshot of playback state (contracts/host-observability-contract.md). */
+data class TransportState(val isPlaying: Boolean, val currentStep: Int)
 
 /**
  * Product module (not scaffolding — spec 002-midi-sequencer). Satisfies core-host's
@@ -29,6 +35,15 @@ class MidiSequencerModule(override val instanceId: String) : Module {
     val isPlaying: Boolean get() = transport.isPlaying
     val currentStep: Int get() = transport.currentStep
 
+    private val _transportState = MutableStateFlow(TransportState(isPlaying = false, currentStep = 0))
+
+    /**
+     * Observable mirror of [isPlaying]/[currentStep] — emits after every [play]/[stop]
+     * call and every step advance during [process] (contracts/host-observability-
+     * contract.md). Additive alongside the existing synchronous properties.
+     */
+    val transportState: StateFlow<TransportState> = _transportState.asStateFlow()
+
     fun setStep(index: Int, notes: List<NoteEvent>) = pattern.setStep(index, notes)
 
     fun clearStep(index: Int) = pattern.clearStep(index)
@@ -38,12 +53,25 @@ class MidiSequencerModule(override val instanceId: String) : Module {
     /** Wraps the current playback position into range immediately if it falls outside the new length (FR-010). */
     fun setLength(steps: Int) {
         val wrapped = pattern.setLength(steps, transport.currentStep)
-        if (wrapped != null) transport.currentStep = wrapped
+        if (wrapped != null) {
+            transport.currentStep = wrapped
+            publishTransportState()
+        }
     }
 
-    fun play() = transport.play()
+    fun play() {
+        transport.play()
+        publishTransportState()
+    }
 
-    fun stop() = transport.stop()
+    fun stop() {
+        transport.stop()
+        publishTransportState()
+    }
+
+    private fun publishTransportState() {
+        _transportState.value = TransportState(transport.isPlaying, transport.currentStep)
+    }
 
     override fun onLoad() {}
 
@@ -61,6 +89,7 @@ class MidiSequencerModule(override val instanceId: String) : Module {
                 transport.sustain(note)
             }
             transport.currentStep = (transport.currentStep + 1) % pattern.length
+            publishTransportState()
         }
 
         context.writeMidi(OUTPUT_PORT_ID, events)
