@@ -17,6 +17,7 @@ fun ParameterControl(
     spec: ParameterSpec,
     currentValue: Double,
     onValueChange: (Double) -> Unit,
+    enabled: Boolean = true,
 ) {
     Column(modifier = Modifier.testTag("parameter-${spec.id}")) {
         Text(text = "${spec.label}: $currentValue")
@@ -26,6 +27,7 @@ fun ParameterControl(
                 onValueChange(raw.toDouble().coerceIn(spec.range))
             },
             valueRange = spec.range.start.toFloat()..spec.range.endInclusive.toFloat(),
+            enabled = enabled,
             modifier = Modifier.testTag("parameter-${spec.id}-slider"),
         )
     }

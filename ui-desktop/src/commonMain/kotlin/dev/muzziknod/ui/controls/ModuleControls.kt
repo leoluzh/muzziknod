@@ -19,14 +19,18 @@ import dev.muzziknod.ui.transport.TransportControls
  * type exposes any (US2). Each module's `StateFlow`s are typed per module (there's no
  * single uniform "parameter bag" contract — see [HostViewModel.moduleInstance]'s
  * doc), so this dispatches on `typeName` rather than a generic abstraction.
+ *
+ * [pendingRemoval] disables every control while the host has a deferred removal in
+ * flight for this instance (FR-015).
  */
 @Composable
-fun ModuleControls(instanceId: String, typeName: String, viewModel: HostViewModel) {
+fun ModuleControls(instanceId: String, typeName: String, viewModel: HostViewModel, pendingRemoval: Boolean) {
+    val enabled = !pendingRemoval
     when (typeName) {
         "midi-sequencer" -> {
             val module = viewModel.moduleInstance<MidiSequencerModule>(instanceId) ?: return
             val transportState by module.transportState.collectAsState()
-            TransportControls(transportState = transportState, onPlay = module::play, onStop = module::stop)
+            TransportControls(transportState = transportState, onPlay = module::play, onStop = module::stop, enabled = enabled)
         }
 
         "delay" -> {
@@ -36,9 +40,9 @@ fun ModuleControls(instanceId: String, typeName: String, viewModel: HostViewMode
             val delayTimeMs by module.delayTimeMs.collectAsState()
             val feedback by module.feedback.collectAsState()
             Column {
-                ParameterControl(specs.getValue("mix"), mix, module::setMix)
-                ParameterControl(specs.getValue("delayTimeMs"), delayTimeMs, module::setDelayTimeMs)
-                ParameterControl(specs.getValue("feedback"), feedback, module::setFeedback)
+                ParameterControl(specs.getValue("mix"), mix, module::setMix, enabled)
+                ParameterControl(specs.getValue("delayTimeMs"), delayTimeMs, module::setDelayTimeMs, enabled)
+                ParameterControl(specs.getValue("feedback"), feedback, module::setFeedback, enabled)
             }
         }
 
@@ -49,9 +53,9 @@ fun ModuleControls(instanceId: String, typeName: String, viewModel: HostViewMode
             val decayMs by module.decayMs.collectAsState()
             val roomSize by module.roomSize.collectAsState()
             Column {
-                ParameterControl(specs.getValue("mix"), mix, module::setMix)
-                ParameterControl(specs.getValue("decayMs"), decayMs, module::setDecayMs)
-                ParameterControl(specs.getValue("roomSize"), roomSize, module::setRoomSize)
+                ParameterControl(specs.getValue("mix"), mix, module::setMix, enabled)
+                ParameterControl(specs.getValue("decayMs"), decayMs, module::setDecayMs, enabled)
+                ParameterControl(specs.getValue("roomSize"), roomSize, module::setRoomSize, enabled)
             }
         }
 
@@ -62,9 +66,9 @@ fun ModuleControls(instanceId: String, typeName: String, viewModel: HostViewMode
             val drive by module.drive.collectAsState()
             val tone by module.tone.collectAsState()
             Column {
-                ParameterControl(specs.getValue("mix"), mix, module::setMix)
-                ParameterControl(specs.getValue("drive"), drive, module::setDrive)
-                ParameterControl(specs.getValue("tone"), tone, module::setTone)
+                ParameterControl(specs.getValue("mix"), mix, module::setMix, enabled)
+                ParameterControl(specs.getValue("drive"), drive, module::setDrive, enabled)
+                ParameterControl(specs.getValue("tone"), tone, module::setTone, enabled)
             }
         }
 
@@ -77,9 +81,9 @@ fun ModuleControls(instanceId: String, typeName: String, viewModel: HostViewMode
                     val freqHz by module.bandFrequency(band).collectAsState()
                     val gainDb by module.bandGain(band).collectAsState()
                     val q by module.bandQ(band).collectAsState()
-                    ParameterControl(specs.getValue("$prefix.freqHz"), freqHz) { module.setBandFrequency(band, it) }
-                    ParameterControl(specs.getValue("$prefix.gainDb"), gainDb) { module.setBandGain(band, it) }
-                    ParameterControl(specs.getValue("$prefix.q"), q) { module.setBandQ(band, it) }
+                    ParameterControl(specs.getValue("$prefix.freqHz"), freqHz, { module.setBandFrequency(band, it) }, enabled)
+                    ParameterControl(specs.getValue("$prefix.gainDb"), gainDb, { module.setBandGain(band, it) }, enabled)
+                    ParameterControl(specs.getValue("$prefix.q"), q, { module.setBandQ(band, it) }, enabled)
                 }
             }
         }

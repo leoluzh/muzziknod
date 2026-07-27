@@ -258,34 +258,41 @@ verificar que aparece no grafo; removê-lo pela UI e verificar que desaparece de
 
 ### Tests for User Story 3
 
-- [ ] T035 [P] [US3] Composable test: `ModuleCatalog` lista as entradas fornecidas e
+- [X] T035 [P] [US3] Composable test: `ModuleCatalog` lista as entradas fornecidas e
       invoca `onAdd` com a entrada selecionada (US3 AC1) in
       `ui-desktop/src/commonTest/kotlin/dev/muzziknod/ui/catalog/ModuleCatalogTest.kt`
-- [ ] T036 [P] [US3] Unit test: `HostViewModel.removeModule` marca o módulo como
+- [X] T036 [P] [US3] Unit test: `HostViewModel.removeModule` marca o módulo como
       `pendingRemoval = true` em `HostUiState` até a remoção ser efetivada pelo host
       (FR-015; Edge Cases) in
       `ui-desktop/src/commonTest/kotlin/dev/muzziknod/ui/state/HostViewModelRemovalTest.kt`
+      (uses a `TriggerModule` test double that calls back into `viewModel.removeModule`
+      from inside an active `processCycle()`, so the deferred-removal window is
+      genuinely observed, not just asserted around it)
 
 ### Implementation for User Story 3
 
-- [ ] T037 [P] [US3] Build the static `List<ModuleCatalogEntry>` — oscillator,
+- [X] T037 [P] [US3] Build the static `List<ModuleCatalogEntry>` — oscillator,
       midi-generator, midi-logger, midi-sequencer, e os quatro tipos de
       `audio-effects` (data-model.md; sampler/synth fora de escopo) in
       `ui-desktop/src/commonMain/kotlin/dev/muzziknod/ui/catalog/ModuleCatalog.kt`
       (also implements the `ModuleCatalog` Composable per contracts/ui-composables-
       contract.md; satisfies T035)
-- [ ] T038 [US3] Add `pendingRemoval` tracking to `HostViewModel.removeModule`/
-      `HostUiState` derivation (local "removal in flight" flag, per data-model.md — the
-      host itself has no such explicit state) in
+- [X] T038 [US3] `pendingRemoval` tracking was already added to `HostViewModel
+      .removeModule`/`uiState` derivation back in Foundational (T011) — no further
+      change needed here in
       `ui-desktop/src/commonMain/kotlin/dev/muzziknod/ui/state/HostViewModel.kt`
-      (depends on T011; satisfies T036)
-- [ ] T039 [US3] Disable a module's controls in `GraphView`/`TransportControls`/
-      `ParameterControls` while `pendingRemoval == true` (FR-015) in
-      `ui-desktop/src/commonMain/kotlin/dev/muzziknod/ui/graph/GraphView.kt`,
-      `transport/TransportControls.kt`, `parameters/ParameterControls.kt` (depends on
-      T038)
-- [ ] T040 [US3] Wire `ModuleCatalog` into `Main.kt` — `onAdd` calls `HostViewModel
-      .addModule`, module removal action calls `HostViewModel.removeModule` in
+      (satisfies T036)
+- [X] T039 [US3] Disable a module's controls while `pendingRemoval == true` (FR-015):
+      `GraphView.kt`'s port `clickable` already had `enabled = !module.pendingRemoval`
+      since T018; added an `enabled: Boolean = true` parameter to `TransportControls`/
+      `ParameterControl` and a `pendingRemoval` parameter to the new `ModuleControls`
+      dispatcher, which passes `enabled = !pendingRemoval` down to every control it
+      renders in
+      `ui-desktop/src/commonMain/kotlin/dev/muzziknod/ui/transport/TransportControls.kt`,
+      `parameters/ParameterControls.kt`, `controls/ModuleControls.kt`
+- [X] T040 [US3] Wire `ModuleCatalog` into `Main.kt` — `onAdd` calls `HostViewModel
+      .addModule`; added a "remover módulo" action per module row calling
+      `HostViewModel.removeModule` in
       `ui-desktop/src/jvmMain/kotlin/dev/muzziknod/ui/desktop/Main.kt` (depends on T020,
       T037, T038)
 

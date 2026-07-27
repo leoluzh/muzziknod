@@ -17,19 +17,20 @@ fun TransportControls(
     transportState: TransportState,
     onPlay: () -> Unit,
     onStop: () -> Unit,
+    enabled: Boolean = true,
 ) {
     Row(modifier = Modifier.testTag("transport-controls")) {
         Text(
             text = "Play",
             modifier = Modifier
                 .testTag("transport-play")
-                .clickable(enabled = !transportState.isPlaying, onClick = onPlay),
+                .clickable(enabled = enabled && !transportState.isPlaying, onClick = onPlay),
         )
         Text(
             text = "Stop",
             modifier = Modifier
                 .testTag("transport-stop")
-                .clickable(enabled = transportState.isPlaying, onClick = onStop),
+                .clickable(enabled = enabled && transportState.isPlaying, onClick = onStop),
         )
         Text(
             text = if (transportState.isPlaying) "Tocando — passo ${transportState.currentStep}" else "Parado",
