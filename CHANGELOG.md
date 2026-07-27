@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/leoluzh/muzziknod/compare/v1.0.0...v1.0.1) (2026-07-27)
+
+
+### Bug Fixes
+
+* Update action inputs from hyphens to underscores for actions/first-interaction@v3 ([4748fd3](https://github.com/leoluzh/muzziknod/commit/4748fd3555128f31ce068622785cd0c347cfa4b5))
+
 ## 1.0.0 (2026-07-27)
 
 
