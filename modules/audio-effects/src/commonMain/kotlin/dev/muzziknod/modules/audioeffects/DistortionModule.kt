@@ -9,6 +9,9 @@ import dev.muzziknod.host.contract.PortDirection
 import dev.muzziknod.host.contract.PortSpec
 import dev.muzziknod.host.contract.PortType
 import dev.muzziknod.host.contract.ProcessContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlin.math.PI
 import kotlin.math.exp
 import kotlin.math.tanh
@@ -55,6 +58,15 @@ class DistortionModule(
     private val driveSmoother = ParameterSmoother(4.0)
     private val toneSmoother = ParameterSmoother(6000.0)
 
+    private val _mix = MutableStateFlow(mixSmoother.current)
+    private val _drive = MutableStateFlow(driveSmoother.current)
+    private val _tone = MutableStateFlow(toneSmoother.current)
+
+    /** Observable mirrors of each parameter's live smoothed value (contracts/host-observability-contract.md). */
+    val mix: StateFlow<Double> = _mix.asStateFlow()
+    val drive: StateFlow<Double> = _drive.asStateFlow()
+    val tone: StateFlow<Double> = _tone.asStateFlow()
+
     // One-pole lowpass state, carried across process() calls.
     private var lowpassState: Float = 0f
 
@@ -94,6 +106,9 @@ class DistortionModule(
             samples[i] = WetDryMixer.mix(dry, lowpassState, mix)
         }
         context.writeAudio(OUTPUT_PORT_ID, outputBuffer)
+        _mix.value = mixSmoother.current
+        _drive.value = driveSmoother.current
+        _tone.value = toneSmoother.current
     }
 
     override fun onRemove() {
