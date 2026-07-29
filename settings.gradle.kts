@@ -38,5 +38,6 @@ include(
     ":reference-modules:midi-logger",
     ":modules:midi-sequencer",
     ":modules:audio-effects",
+    ":modules:sampler",
     ":ui-desktop",
 )
