@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/leoluzh/muzziknod/compare/v1.0.1...v1.0.2) (2026-07-28)
+
+
+### Bug Fixes
+
+* **ui-desktop:** stack module controls vertically, scroll the window ([c334cbb](https://github.com/leoluzh/muzziknod/commit/c334cbb6c66c683a44a3232915aa01f57f043d9f))
+
 ## [1.0.1](https://github.com/leoluzh/muzziknod/compare/v1.0.0...v1.0.1) (2026-07-27)
 
 
