@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.0](https://github.com/leoluzh/muzziknod/compare/v1.0.2...v1.1.0) (2026-07-30)
+
+
+### Features
+
+* graceful degradation on missing modules/samples (T029-T032) ([80a4eb5](https://github.com/leoluzh/muzziknod/commit/80a4eb5b1ce1babe415802da53cb0cd5ec783bf3))
+* polish project persistence (T033-T036) ([9a4cbf1](https://github.com/leoluzh/muzziknod/commit/9a4cbf19b138025001085be0d123c84bf76bede1))
+* project save/load MVP (T013-T028) ([9b8ecce](https://github.com/leoluzh/muzziknod/commit/9b8eccee54987288e807ed3de92c37ae9846909a))
+* project-persistence scaffolding + foundational model (T001-T012) ([2546185](https://github.com/leoluzh/muzziknod/commit/254618583c57f2dbee2f2475a7d4a88ae3dc6d9b))
+
 ## [1.0.2](https://github.com/leoluzh/muzziknod/compare/v1.0.1...v1.0.2) (2026-07-28)
 
 
