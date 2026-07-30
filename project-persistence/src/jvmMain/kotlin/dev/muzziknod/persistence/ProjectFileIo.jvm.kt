@@ -10,3 +10,5 @@ actual fun readProjectFile(path: String): String =
 actual fun writeProjectFile(path: String, content: String) {
     Files.writeString(Path.of(path), content, StandardCharsets.UTF_8)
 }
+
+actual fun readFileBytes(path: String): ByteArray = Files.readAllBytes(Path.of(path))

@@ -59,6 +59,18 @@ class Transport {
         update { it.copy(loopStart = start, loopEnd = end) }
     }
 
+    /**
+     * Applies every field of [snapshot] at once (006-project-persistence FR-007). Uses
+     * [play]/[pause] rather than [stop] for the play-state so a saved paused position
+     * isn't reset to zero on restore.
+     */
+    fun restore(snapshot: TransportState) {
+        setTempo(snapshot.tempoBpm)
+        setPosition(snapshot.positionBeats)
+        setLoopRange(snapshot.loopStart, snapshot.loopEnd)
+        if (snapshot.isPlaying) play() else pause()
+    }
+
     private inline fun update(transform: (TransportState) -> TransportState) {
         current = transform(current)
         _state.value = current

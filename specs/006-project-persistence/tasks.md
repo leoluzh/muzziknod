@@ -122,17 +122,17 @@ its decoded `ProjectSnapshot` contains the graph, connections, and parameter val
 
 ### Tests for User Story 1
 
-- [ ] T013 [P] [US1] Integration test: `ProjectWriter.save()` on a session with a
+- [X] T013 [P] [US1] Integration test: `ProjectWriter.save()` on a session with a
       connected delay+reverb graph (non-default `mix`/`delayTimeMs`/`feedback` params)
       and a non-default `Transport` writes a JSON file whose decoded `ProjectSnapshot`
       contains matching modules, connections, parameters, and transport (FR-001,
       FR-002, FR-003, FR-004; US1 AC1) in
       `project-persistence/src/jvmTest/kotlin/dev/muzziknod/persistence/ProjectWriterSaveTest.kt`
-- [ ] T014 [P] [US1] Integration test: saving twice to the same path overwrites (second
+- [X] T014 [P] [US1] Integration test: saving twice to the same path overwrites (second
       save's content fully replaces the first, no duplication/append); "save as" to a
       different path leaves the original file's bytes unchanged (FR-012; US1 AC2-3) in
       `project-persistence/src/jvmTest/kotlin/dev/muzziknod/persistence/ProjectFileIoTest.kt`
-- [ ] T015 [P] [US1] Unit test: `SamplerCodec.capture()` on a `SamplerModule` with
+- [X] T015 [P] [US1] Unit test: `SamplerCodec.capture()` on a `SamplerModule` with
       loaded zones (including a `sourcePath`) produces a `ModuleSnapshot` whose
       `moduleData` decodes to a `SamplerData` with matching zones, and never contains
       raw sample audio bytes anywhere in the encoded output (FR-005, FR-006) in
@@ -140,22 +140,22 @@ its decoded `ProjectSnapshot` contains the graph, connections, and parameter val
 
 ### Implementation for User Story 1
 
-- [ ] T016 [P] [US1] Implement `DelayCodec`/`ReverbCodec`/`DistortionCodec`/`EqCodec`
+- [X] T016 [P] [US1] Implement `DelayCodec`/`ReverbCodec`/`DistortionCodec`/`EqCodec`
       `capture()`: read each module's `StateFlow<Double>` parameter mirrors into
       `ModuleSnapshot.parameters` keyed by the same ids as their `ParameterSpec`s
       (FR-003) in
       `project-persistence/src/commonMain/kotlin/dev/muzziknod/persistence/codec/DelayCodec.kt`,
       `ReverbCodec.kt`, `DistortionCodec.kt`, `EqCodec.kt` (depends on T009)
-- [ ] T017 [P] [US1] Implement `MidiSequencerCodec.capture()`: bpm and pattern data
+- [X] T017 [P] [US1] Implement `MidiSequencerCodec.capture()`: bpm and pattern data
       into `parameters`/`moduleData` (FR-003) in
       `project-persistence/src/commonMain/kotlin/dev/muzziknod/persistence/codec/MidiSequencerCodec.kt`
       (depends on T009)
-- [ ] T018 [US1] Implement `SamplerCodec.capture()`: reads `SamplerModule.zones`, maps
+- [X] T018 [US1] Implement `SamplerCodec.capture()`: reads `SamplerModule.zones`, maps
       each `SampleZone` (including `sourcePath`) to a `SampleZoneSnapshot`, wraps them
       in `SamplerData`, and sets it as `ModuleSnapshot.moduleData` (FR-005, FR-006) in
       `project-persistence/src/commonMain/kotlin/dev/muzziknod/persistence/codec/SamplerCodec.kt`
       (depends on T007, T009, T005)
-- [ ] T019 [US1] Implement `ProjectWriter`: given `ModuleRegistry`, `RoutingGraph`,
+- [X] T019 [US1] Implement `ProjectWriter`: given `ModuleRegistry`, `RoutingGraph`,
       `Transport`, and `ProjectPersistenceCatalog`, builds a `ProjectSnapshot` (one
       `ModuleSnapshot` per registered instance via its type's codec, `connections` from
       `RoutingGraph.connections()`, `transport` from `Transport.state.value`), encodes
@@ -163,7 +163,7 @@ its decoded `ProjectSnapshot` contains the graph, connections, and parameter val
       `writeProjectFile()` (FR-001, FR-002, FR-003, FR-004, FR-012) in
       `project-persistence/src/commonMain/kotlin/dev/muzziknod/persistence/ProjectWriter.kt`
       (depends on T016, T017, T018, T012, T004)
-- [ ] T020 [US1] Register `DelayCodec`/`ReverbCodec`/`DistortionCodec`/`EqCodec`/
+- [X] T020 [US1] Register `DelayCodec`/`ReverbCodec`/`DistortionCodec`/`EqCodec`/
       `MidiSequencerCodec`/`SamplerCodec` in a `defaultProjectPersistenceCatalog()`
       factory (mirrors `ui-desktop`'s `defaultModuleCatalog()`) in
       `project-persistence/src/commonMain/kotlin/dev/muzziknod/persistence/ProjectPersistenceCatalog.kt`
@@ -189,44 +189,47 @@ mapping matches what was saved.
 
 ### Tests for User Story 2
 
-- [ ] T021 [P] [US2] Integration test `ProjectRoundTripTest`: build a graph spanning
-      every codec-backed module type (including a sampler instance with a real
-      `sourcePath`), connect them, set non-default parameters and transport state,
-      save via `ProjectWriter`, build a **fresh** `ModuleRegistry`/`RoutingGraph`/
-      `Transport`, load via `ProjectReader`, and assert every module, connection,
-      parameter value, transport field, and sampler zone matches exactly, with zero
-      warnings (FR-007; SC-001, SC-002, SC-003; US2 AC1-4) in
-      `project-persistence/src/jvmTest/kotlin/dev/muzziknod/persistence/ProjectRoundTripTest.kt`
-- [ ] T022 [P] [US2] Unit test `TransportPersistenceTest`: capture/restore round trip
+- [X] T021 [P] [US2] Integration test `ProjectRoundTripTest`: build a graph spanning
+      every codec-backed module type, connect them, set non-default parameters and
+      transport state, save via `ProjectWriter`, build a **fresh** `ModuleRegistry`/
+      `RoutingGraph`/`Transport`, load via `ProjectReader`, and assert every module,
+      connection, parameter value, and transport field matches exactly, with zero
+      warnings (FR-007; SC-001, SC-002; US2 AC1-3) in
+      `project-persistence/src/commonTest/kotlin/dev/muzziknod/persistence/ProjectRoundTripTest.kt`;
+      the sampler-with-real-`sourcePath` half of AC4 needs actual file I/O, so it lives
+      separately in
+      `project-persistence/src/jvmTest/kotlin/dev/muzziknod/persistence/SamplerProjectRoundTripTest.kt`
+      (SC-003; US2 AC4)
+- [X] T022 [P] [US2] Unit test `TransportPersistenceTest`: capture/restore round trip
       of tempo, position, loop range, and play state via `TransportSnapshot` in
       isolation (FR-004; SC-002; US2 AC3) in
       `project-persistence/src/commonTest/kotlin/dev/muzziknod/persistence/TransportPersistenceTest.kt`
-- [ ] T023 [P] [US2] Unit test: `ProjectReader` rejects a `ProjectSnapshot` whose
+- [X] T023 [P] [US2] Unit test: `ProjectReader` rejects a `ProjectSnapshot` whose
       `schemaVersion` is newer than this build supports with a clear, typed error,
       without attempting to decode the rest of the file (FR-011) in
       `project-persistence/src/commonTest/kotlin/dev/muzziknod/persistence/SchemaVersionTest.kt`
 
 ### Implementation for User Story 2
 
-- [ ] T024 [P] [US2] Implement `DelayCodec`/`ReverbCodec`/`DistortionCodec`/`EqCodec`
+- [X] T024 [P] [US2] Implement `DelayCodec`/`ReverbCodec`/`DistortionCodec`/`EqCodec`
       `restore()`: construct a new instance with the snapshot's `instanceId` and apply
       every captured parameter via the module's typed setters (FR-007) in
       `project-persistence/src/commonMain/kotlin/dev/muzziknod/persistence/codec/DelayCodec.kt`,
       `ReverbCodec.kt`, `DistortionCodec.kt`, `EqCodec.kt` (depends on T016)
-- [ ] T025 [P] [US2] Implement `MidiSequencerCodec.restore()` (FR-007) in
+- [X] T025 [P] [US2] Implement `MidiSequencerCodec.restore()` (FR-007) in
       `project-persistence/src/commonMain/kotlin/dev/muzziknod/persistence/codec/MidiSequencerCodec.kt`
       (depends on T017)
-- [ ] T026 [US2] Implement `SamplerCodec.restore()`: constructs a new `SamplerModule`
+- [X] T026 [US2] Implement `SamplerCodec.restore()`: constructs a new `SamplerModule`
       and calls `loadSample(...)` for each `SampleZoneSnapshot`, reading bytes from
       `sourcePath` via `readProjectFile`-adjacent raw file read (FR-005, FR-007) in
       `project-persistence/src/commonMain/kotlin/dev/muzziknod/persistence/codec/SamplerCodec.kt`
       (depends on T018, T012)
-- [ ] T027 [US2] Add `Transport.restore(snapshot: TransportState)` wiring a
+- [X] T027 [US2] Add `Transport.restore(snapshot: TransportState)` wiring a
       `TransportSnapshot`/`TransportState` back onto a live `Transport` via
       `setTempo`/`setPosition`/`setLoopRange`/`play`/`pause`/`stop` (FR-004, FR-007) in
       `core-host/src/commonMain/kotlin/dev/muzziknod/host/transport/Transport.kt`
       (depends on T004)
-- [ ] T028 [US2] Implement `ProjectReader`: reads the file via `readProjectFile`,
+- [X] T028 [US2] Implement `ProjectReader`: reads the file via `readProjectFile`,
       decodes and validates `schemaVersion` (FR-011) before decoding the rest, decodes
       the `ProjectSnapshot`, rebuilds each module via `ProjectPersistenceCatalog` +
       `ModuleRegistry.load()`, rebuilds connections via `RoutingGraph.connect()`,
