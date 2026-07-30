@@ -40,4 +40,5 @@ include(
     ":modules:audio-effects",
     ":modules:sampler",
     ":ui-desktop",
+    ":project-persistence",
 )

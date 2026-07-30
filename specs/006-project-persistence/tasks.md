@@ -28,16 +28,16 @@ already existing. Ordered US1 → US2 → US3, matching spec.md's priorities.
 
 ## Phase 1: Setup (Shared Infrastructure)
 
-- [ ] T001 Add `:project-persistence` to root `settings.gradle.kts`; create directory
+- [X] T001 Add `:project-persistence` to root `settings.gradle.kts`; create directory
       skeleton (`project-persistence/src/commonMain/kotlin/dev/muzziknod/persistence/`,
       `.../model/`, `.../codec/`, `project-persistence/src/jvmMain/kotlin/dev/muzziknod/persistence/`,
       `project-persistence/src/commonTest/kotlin/dev/muzziknod/persistence/`,
       `.../codec/`, `project-persistence/src/jvmTest/kotlin/dev/muzziknod/persistence/`)
-- [ ] T002 [P] Add `kotlinx-serialization-json` version/library entry to
+- [X] T002 [P] Add `kotlinx-serialization-json` version/library entry to
       `gradle/libs.versions.toml`, and the `org.jetbrains.kotlin.plugin.serialization`
       plugin coordinate (`apply false`) to root `build.gradle.kts` (research.md
       "Serialization format & library")
-- [ ] T003 [P] Create `project-persistence/build.gradle.kts` — KMP plugin, `jvm()`
+- [X] T003 [P] Create `project-persistence/build.gradle.kts` — KMP plugin, `jvm()`
       target (same JVM target as every other module), `kotlin.plugin.serialization`
       plugin applied, depends on `core-host`, `modules:midi-sequencer`,
       `modules:audio-effects`, `modules:sampler`; `kotlinx-serialization-json` on
@@ -54,53 +54,53 @@ alongside existing ones; serialization plugin resolves)
 itself, the file I/O boundary, the new host `Transport`, and sampler's `sourcePath`
 field — shared groundwork no user story can build on top of until it exists.
 
-- [ ] T004 [P] Implement `Transport` in `core-host`: `TransportState` data class
+- [X] T004 [P] Implement `Transport` in `core-host`: `TransportState` data class
       (`tempoBpm: Double`, `positionBeats: Double`, `isPlaying: Boolean`,
       `loopStart: Double?`, `loopEnd: Double?`), `Transport` class with
       `play()/pause()/stop()/setTempo(Double)/setPosition(Double)/setLoopRange(Double?,
       Double?)` (rejecting a half-specified loop range), `state: StateFlow<TransportState>`
       (research.md "Transport"; data-model.md "TransportSnapshot") in
       `core-host/src/commonMain/kotlin/dev/muzziknod/host/transport/Transport.kt`
-- [ ] T005 [P] Add an optional `sourcePath: String?` to `modules/sampler`'s
+- [X] T005 [P] Add an optional `sourcePath: String?` to `modules/sampler`'s
       `SampleZone`, and a matching optional `sourcePath: String? = null` parameter to
       `SamplerModule.loadSample(...)`, defaulting to `null` so every existing call site
       stays source-compatible (research.md "Sample file path tracking"; FR-006) in
       `modules/sampler/src/commonMain/kotlin/dev/muzziknod/modules/sampler/SampleZone.kt`
       and
       `modules/sampler/src/commonMain/kotlin/dev/muzziknod/modules/sampler/SamplerModule.kt`
-- [ ] T006 [P] Implement `@Serializable` DTOs per data-model.md: `ProjectSnapshot`
+- [X] T006 [P] Implement `@Serializable` DTOs per data-model.md: `ProjectSnapshot`
       (`schemaVersion`, `modules`, `connections`, `transport`), `ModuleSnapshot`
       (`instanceId`, `typeId`, `parameters: Map<String, Double>`,
       `moduleData: JsonElement?`), `ConnectionSnapshot`, `TransportSnapshot` in
       `project-persistence/src/commonMain/kotlin/dev/muzziknod/persistence/model/ProjectSnapshot.kt`,
       `ModuleSnapshot.kt`, `ConnectionSnapshot.kt`, `TransportSnapshot.kt` (depends on
       T003)
-- [ ] T007 [P] Implement `@Serializable` `SamplerData` (`zones: List<SampleZoneSnapshot>`)
+- [X] T007 [P] Implement `@Serializable` `SamplerData` (`zones: List<SampleZoneSnapshot>`)
       and `SampleZoneSnapshot` (`sourcePath`, `sampleId`, `rootNote`, `lowNote`,
       `highNote`, `gain`, `loopMode`) per data-model.md in
       `project-persistence/src/commonMain/kotlin/dev/muzziknod/persistence/model/SamplerData.kt`
       (depends on T003)
-- [ ] T008 [P] Implement `ProjectLoadResult(warnings: List<LoadWarning>)` and sealed
+- [X] T008 [P] Implement `ProjectLoadResult(warnings: List<LoadWarning>)` and sealed
       `LoadWarning` (`MissingModuleType(typeId, instanceId)`,
       `MissingSampleFile(instanceId, sourcePath)`) per data-model.md in
       `project-persistence/src/commonMain/kotlin/dev/muzziknod/persistence/ProjectLoadResult.kt`
       (depends on T003)
-- [ ] T009 Implement the `ModuleStateCodec` interface (`typeId`,
+- [X] T009 Implement the `ModuleStateCodec` interface (`typeId`,
       `capture(module: Module): ModuleSnapshot`,
       `restore(instanceId: String, snapshot: ModuleSnapshot): Module`) per
       contracts/module-state-codec.md in
       `project-persistence/src/commonMain/kotlin/dev/muzziknod/persistence/codec/ModuleStateCodec.kt`
       (depends on T006)
-- [ ] T010 Implement `ProjectPersistenceCatalog(codecs: Map<String, ModuleStateCodec>)`
+- [X] T010 Implement `ProjectPersistenceCatalog(codecs: Map<String, ModuleStateCodec>)`
       with `codecFor(typeId): ModuleStateCodec?`, constructed empty for now (codec
       registration lands per-codec in US1/US2) in
       `project-persistence/src/commonMain/kotlin/dev/muzziknod/persistence/ProjectPersistenceCatalog.kt`
       (depends on T009)
-- [ ] T011 [P] Declare `expect fun readProjectFile(path: String): String` and
+- [X] T011 [P] Declare `expect fun readProjectFile(path: String): String` and
       `expect fun writeProjectFile(path: String, content: String)` in
       `project-persistence/src/commonMain/kotlin/dev/muzziknod/persistence/ProjectFileIo.kt`
       (depends on T003)
-- [ ] T012 Implement the `actual` file I/O over `java.nio.file.Files` (read/write UTF-8,
+- [X] T012 Implement the `actual` file I/O over `java.nio.file.Files` (read/write UTF-8,
       overwrite on write) in
       `project-persistence/src/jvmMain/kotlin/dev/muzziknod/persistence/ProjectFileIo.jvm.kt`
       (depends on T011)
