@@ -63,11 +63,12 @@ Comandos opcionais de reforço de qualidade: `/speckit-analyze`, `/speckit-check
 | [003](specs/003-audio-effects/spec.md) | Módulos de Efeitos de Áudio — Reverb, Delay, Distortion, EQ, encadeáveis via grafo de roteamento | Implementado — ver [tasks.md](specs/003-audio-effects/tasks.md) e [quickstart.md](specs/003-audio-effects/quickstart.md) |
 | [004](specs/004-ui-compose/spec.md) | UI Compose Multiplatform do Host Modular — visualização/edição do grafo de roteamento, controles de transporte/parâmetros, catálogo de módulos | Implementado — ver [tasks.md](specs/004-ui-compose/tasks.md) e [quickstart.md](specs/004-ui-compose/quickstart.md) |
 | [005](specs/005-sampler-module/spec.md) | Módulo Sampler — carregamento de amostras WAV/AIFF, disparo polifônico via MIDI, pitch-shift por nota, modos one-shot/loop | Implementado — ver [tasks.md](specs/005-sampler-module/tasks.md) e [quickstart.md](specs/005-sampler-module/quickstart.md) |
+| [006](specs/006-project-persistence/spec.md) | Persistência de Projeto — salvar/carregar grafo de módulos, parâmetros, transporte e amostras do sampler em um arquivo de projeto | Implementado — ver [tasks.md](specs/006-project-persistence/tasks.md) e [quickstart.md](specs/006-project-persistence/quickstart.md) |
 
 ## Build & testes
 
 ```bash
-./gradlew build   # compila core-host + reference-modules (oscillator, midi-generator, midi-logger) + modules (midi-sequencer, audio-effects, sampler) + ui-desktop
+./gradlew build   # compila core-host + reference-modules (oscillator, midi-generator, midi-logger) + modules (midi-sequencer, audio-effects, sampler) + project-persistence + ui-desktop
 ./gradlew check   # roda todos os testes de todos os módulos (não existe task `test` no root — é `check`, ou `jvmTest` por módulo)
 ./gradlew :ui-desktop:run   # abre a UI Compose Desktop do host modular
 ```
@@ -75,9 +76,10 @@ Comandos opcionais de reforço de qualidade: `/speckit-analyze`, `/speckit-check
 Veja [`specs/001-core-host/quickstart.md`](specs/001-core-host/quickstart.md),
 [`specs/002-midi-sequencer/quickstart.md`](specs/002-midi-sequencer/quickstart.md),
 [`specs/003-audio-effects/quickstart.md`](specs/003-audio-effects/quickstart.md),
-[`specs/004-ui-compose/quickstart.md`](specs/004-ui-compose/quickstart.md) e
-[`specs/005-sampler-module/quickstart.md`](specs/005-sampler-module/quickstart.md) para
-os comandos de validação cenário-a-cenário.
+[`specs/004-ui-compose/quickstart.md`](specs/004-ui-compose/quickstart.md),
+[`specs/005-sampler-module/quickstart.md`](specs/005-sampler-module/quickstart.md) e
+[`specs/006-project-persistence/quickstart.md`](specs/006-project-persistence/quickstart.md)
+para os comandos de validação cenário-a-cenário.
 
 ## Próximos passos sugeridos
 

@@ -62,6 +62,7 @@ class SamplerModule(
         highNote: Int = 127,
         gain: Double = 1.0,
         loopMode: LoopMode = LoopMode.OneShot,
+        sourcePath: String? = null,
     ): SampleLoadResult {
         val decoded = try {
             decodeSample(bytes, sampleRate)
@@ -78,6 +79,7 @@ class SamplerModule(
             highNote = highNote,
             gain = gain,
             loopMode = loopMode,
+            sourcePath = sourcePath,
         )
         mutableZones += zone
         return SampleLoadResult.Loaded(zone)
