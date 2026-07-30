@@ -255,24 +255,24 @@ unrecognized module type).
 
 ### Tests for User Story 3
 
-- [ ] T029 [P] [US3] Integration test: a `ProjectSnapshot` JSON containing one module
+- [X] T029 [P] [US3] Integration test: a `ProjectSnapshot` JSON containing one module
       with an unrecognized `typeId` still loads every other module successfully, and
       `ProjectLoadResult.warnings` contains exactly one `MissingModuleType` naming that
       `typeId`/`instanceId` (FR-009; US3 AC2) in
       `project-persistence/src/commonTest/kotlin/dev/muzziknod/persistence/MissingModuleWarningTest.kt`
-- [ ] T030 [P] [US3] Integration test: a sampler zone whose `sourcePath` points at a
+- [X] T030 [P] [US3] Integration test: a sampler zone whose `sourcePath` points at a
       deleted file loads the rest of the project normally, and `warnings` contains
       exactly one `MissingSampleFile` naming that path (FR-010; US3 AC1) in
       `project-persistence/src/jvmTest/kotlin/dev/muzziknod/persistence/MissingSampleWarningTest.kt`
 
 ### Implementation for User Story 3
 
-- [ ] T031 [US3] In `ProjectReader`, when `catalog.codecFor(typeId)` returns `null`,
+- [X] T031 [US3] In `ProjectReader`, when `catalog.codecFor(typeId)` returns `null`,
       skip that `ModuleSnapshot` (don't add it to the registry, don't abort) and append
       a `LoadWarning.MissingModuleType` to the result instead (FR-009) in
       `project-persistence/src/commonMain/kotlin/dev/muzziknod/persistence/ProjectReader.kt`
       (depends on T028)
-- [ ] T032 [US3] In `SamplerCodec.restore()`, catch a file-read failure per
+- [X] T032 [US3] In `SamplerCodec.restore()`, catch a file-read failure per
       `SampleZoneSnapshot` and skip that zone instead of throwing; surface the failed
       `sourcePath`s to `ProjectReader`, which appends one `LoadWarning.MissingSampleFile`
       per path (FR-010) in
