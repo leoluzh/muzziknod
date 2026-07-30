@@ -288,20 +288,23 @@ graceful degradation on missing module types/sample files all work.
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T033 [P] Integration test `CorruptFileTest`: invalid JSON and a truncated file
+- [X] T033 [P] Integration test `CorruptFileTest`: invalid JSON and a truncated file
       each produce a clear, typed load error — never an uncaught exception, never a
       partially-applied mutation to the live `ModuleRegistry`/`RoutingGraph`/
       `Transport` (FR-008) in
       `project-persistence/src/jvmTest/kotlin/dev/muzziknod/persistence/CorruptFileTest.kt`
-- [ ] T034 Wire `ui-desktop`'s `HostViewModel` to own a `Transport` instance and add
+- [X] T034 Wire `ui-desktop`'s `HostViewModel` to own a `Transport` instance and add
       Save / Save As / Load actions calling `ProjectWriter`/`ProjectReader`, surfacing
       `ProjectLoadResult.warnings` to the user (plan.md "Structure Decision" follow-up
       integration) in `ui-desktop/src/jvmMain/kotlin/dev/muzziknod/ui/desktop/Main.kt`
-      and `ui-desktop/src/commonMain/kotlin/dev/muzziknod/ui/state/HostViewModel.kt`
-- [ ] T035 Run `quickstart.md`'s full validation
+      and `ui-desktop/src/commonMain/kotlin/dev/muzziknod/ui/state/HostViewModel.kt`.
+      New `ui-desktop/.../project/ProjectControls.kt` Composable (path field + Save/
+      Save As/Load buttons + message row), covered by
+      `ui-desktop/src/commonTest/kotlin/dev/muzziknod/ui/project/ProjectControlsTest.kt`.
+- [X] T035 Run `quickstart.md`'s full validation
       (`./gradlew :project-persistence:jvmTest`) and confirm every scenario and
       SC-001 through SC-005 pass in one run
-- [ ] T036 [P] Add `:project-persistence` to the root `README.md`'s module list
+- [X] T036 [P] Add `:project-persistence` to the root `README.md`'s module list
 
 ---
 

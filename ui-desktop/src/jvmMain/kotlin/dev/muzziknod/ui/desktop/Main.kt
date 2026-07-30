@@ -24,6 +24,7 @@ import dev.muzziknod.ui.catalog.ModuleCatalog
 import dev.muzziknod.ui.catalog.defaultModuleCatalog
 import dev.muzziknod.ui.controls.ModuleControls
 import dev.muzziknod.ui.graph.GraphView
+import dev.muzziknod.ui.project.ProjectControls
 import dev.muzziknod.ui.state.HostViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,7 +47,14 @@ fun App(viewModel: HostViewModel) {
     MaterialTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             val state by viewModel.uiState.collectAsState()
+            val projectMessage by viewModel.projectMessage.collectAsState()
             Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+                ProjectControls(
+                    projectMessage = projectMessage,
+                    onSave = viewModel::save,
+                    onSaveAs = viewModel::saveAs,
+                    onLoad = viewModel::load,
+                )
                 ModuleCatalog(entries = defaultModuleCatalog(), onAdd = viewModel::addModule)
                 GraphView(
                     state = state,

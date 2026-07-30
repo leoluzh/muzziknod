@@ -19,6 +19,7 @@ kotlin {
             implementation(project(":reference-modules:oscillator"))
             implementation(project(":reference-modules:midi-generator"))
             implementation(project(":reference-modules:midi-logger"))
+            implementation(project(":project-persistence"))
             implementation(libs.kotlinx.coroutines.core)
             implementation(compose.runtime)
             implementation(compose.foundation)
